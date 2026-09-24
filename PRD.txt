@@ -1,0 +1,507 @@
+ANZA Gems – Shopify Marketplace
+Developer Project Requirements Document
+Hybrid Wholesale (B2B) + Retail (B2C) Gemstone Marketplace
+
+1. Project Overview
+ANZA Gems is a gemstone wholesaler currently operating on ShopWired. The objective of this project is to build a new Shopify-based marketplace that supports both wholesale (B2B) and retail (B2C) customer experiences in a single, unified storefront.
+The client works closely with Gemist, which provides backend infrastructure and product data management. The new storefront must modernize the current platform while preserving the brand's emphasis on ethical sourcing, gemstone traceability, and East African artisanal mining partnerships.
+The MVP focuses on storefront implementation, wholesale access control, product presentation, and Shopify commerce workflows. The build must follow the approved Figma designs exactly and be fully responsive across desktop, tablet, and mobile.
+1.1 Business Goals
+•	Modernize the existing storefront experience
+•	Improve gemstone discovery and filtering
+•	Support wholesale buyers and retail customers simultaneously in one Shopify store
+•	Create scalable infrastructure for future marketplace growth
+•	Simplify catalog and inventory synchronization workflows
+•	Preserve brand storytelling around ethical sourcing, traceability, and community impact
+1.2 Technical Goals
+•	Implement the new storefront within the Shopify ecosystem (Standard plan)
+•	Integrate cleanly with Gemist backend infrastructure for product data
+•	Implement customer-type-based pricing logic (guest / retail / wholesale)
+•	Create secure wholesale authentication and approval workflows
+•	Support scalable product synchronization (CSV now, API later)
+•	Build a performant, maintainable frontend that follows Figma exactly
+1.3 Project Snapshot
+Field	Detail
+Project Name	ANZA Gems Shopify Marketplace
+Client Company	ANZA Gems (Billing entity: Gemist, Inc.)
+Current Platform	ShopWired (being replaced)
+Target Platform	Shopify (Standard Plan — NOT Shopify Plus)
+Project Type	Custom theme build + B2B configuration
+MVP Timeline	Approximately 4 weeks
+Communication	Slack workspace: anzagems-dev
+Design Source	Approved Figma file (access granted)
+Product Data Source	Initial CSV import; future Gemist API (post-MVP)
+
+1.4 Stakeholders & Contacts
+Role	Name	Responsibility
+Business Owner	Anup Murarka	Escalation & business decisions
+Technical / Product	Eric Beato	Architecture & product direction
+Project Manager (Client)	Luis Fernandez	Day-to-day coordination
+Project Manager (Agency)	Hemang Vasani	Agency-side coordination
+Developer	Assigned developer	Implementation & delivery
+
+
+2. Client Requirements
+This section lists the requirements as confirmed by the client during discovery and meetings. These are non-negotiable inputs to the build.
+2.1 Platform & Technology
+•	Site must be built on Shopify (Standard plan, NOT Shopify Plus)
+•	Wholesale / trade functionality must be enabled via a third-party B2B app (SparkLayer or Wholesale Gorilla are the leading candidates; final choice to be confirmed during Phase 1)
+•	The store must integrate with Gemist as the long-term source of product data
+•	Initial product upload via CSV (Gemist API integration deferred to a future phase)
+•	Frontend must be fully responsive (desktop, tablet, mobile)
+•	Must follow the approved Figma designs exactly
+2.2 Access & Customer Experience
+•	All visitors must be able to view all pages, including the gemstone marketplace
+•	In a signed-out state: gemstones must NOT show prices, and all Request, Share, Heart (Favorite) buttons on the listing and detail pages must trigger a Trade Login / Sign Up modal
+•	If a trade user is logged in: prices and all CTA buttons must be visible and functional
+•	Wholesale will be the predominant login type, but retail buyers may also be authorized to purchase at retail prices
+•	Pricing visibility is role-based — different logins display different prices (this is a customer-base role, NOT a Shopify admin role)
+•	Not all account sign-ups should automatically become wholesale customers — a custom approval flow is required (admin reviews and approves trade accounts manually)
+2.3 Product Catalog
+•	Products to be imported via CSV initially (client to supply)
+•	Gemstone-specific attributes must be supported as metafields: gem type, color, shape, size (mm), carat weight, origin, cutter, birthstone, availability count, price (retail + wholesale)
+•	Each stone is a unique inventory item with attributes like Origin (e.g., Tanzania) and a unique ID number
+•	Each product card shows: image, gem name, origin, ID number, availability count, shape, size, and (for logged-in users) price
+•	Future plan: integrate the Gemist gemstone marketplace with Shopify checkout so trade users can purchase stones directly
+2.4 Search & Filtering
+•	Marketplace-style filtering experience matching the Figma designs
+•	Color swatch picker filter (visual swatches, multi-select)
+•	Dynamic, multi-select filters with responsive mobile behavior
+•	"All Filters" modal pattern for the full filter list
+•	Filters must include: Color, Gem Type, Shape, Price, Size, Origin, Carat, Cutter, Birthstone, Availability
+•	Bulk actions on the listing page: Request Selected, Share Selected (gated by login)
+2.5 Content & Brand
+•	Preserve brand emphasis on transparency, fair trade, craftsmanship, community empowerment, and sustainability
+•	About Us page must feature the brand story, values, sourcing process, miners, cutters, and designers (per Figma)
+•	Blog must support multiple content categories: Blog, Video, Podcasts, Case Studies
+•	Newsletter signup must be present (homepage + footer)
+•	Footer must include the standard ANZA Gems navigation: Shop (Gemstones, Jewelry, Moyo Gems), About (About ANZA Gems, Who Mined Your Gem, Who Cut Your Gem), Resources (Blog, Register for a Trade Account, Shipping/Memo + Return), Connect (social links, Privacy Policy)
+
+3. Features & Functionalities
+3.1 User Roles & Authentication
+The site supports four functional user states. The role determines what is visible, what CTAs are active, and what the user can do.
+Capability	Guest (Not Signed In)	Retail User (Signed In)	Wholesale User (Approved)	Pending Wholesale
+Browse marketplace	Yes	Yes	Yes	Yes
+View gem specifications	Yes	Yes	Yes	Yes
+View pricing	No	Retail price only	Wholesale price	No
+Save / Favorite stones	Prompts login	Yes	Yes	No
+Add to cart / Request stone	Prompts login	Yes (retail)	Yes (wholesale)	No
+Share Selected	Prompts login	Yes	Yes	No
+Checkout	Blocked	Retail checkout	Wholesale checkout	Blocked
+Read blog / About / CMS	Yes	Yes	Yes	Yes
+
+Key behavior notes:
+•	Authentication is part of the sales funnel, not just account management — every gated CTA pulls the user into a sign-in modal
+•	The sign-in modal is reused throughout the site, triggered from listing actions, PDP actions, save/favorite, request, share, etc.
+•	Sign-in modal copy: "Unlock Exclusive Wholesale Gems — Sign in to view wholesale pricing, add your favorite gemstones, select items for your order, and check out seamlessly, all in one place."
+•	Login page also available as a standalone route with Email + Password fields, plus "Create Account" and "Forgot Password?" links
+3.2 Wholesale Account Approval Workflow
+Trade accounts are NOT auto-approved. The flow is:
+1.	Customer fills out the trade application form (Register for a Trade Account page)
+2.	Admin reviews the application in the Shopify admin (or via the B2B app's interface)
+3.	If approved, the customer is tagged as a wholesale customer and gains: wholesale pricing visibility, full CTA access, wholesale checkout permissions
+4.	If rejected or pending, the customer remains in a restricted state (can browse but cannot view pricing or purchase)
+
+Implementation approach (since Shopify Standard, not Plus):
+•	Use Shopify customer tags to mark wholesale vs. retail vs. pending
+•	Use the chosen B2B app (SparkLayer or Wholesale Gorilla) for the wholesale pricing layer and approval workflow
+•	Custom Liquid logic + customer tags drive the role-based visibility on the storefront
+3.3 Pricing Visibility Logic
+Pricing visibility is governed entirely by the customer's role tag at request time.
+•	Guest (not signed in): No prices anywhere on the site. All price fields replaced with "Log in to view price" or hidden. Price filter on the marketplace is hidden or disabled.
+•	Retail user (signed in, retail-tagged): Retail price visible on listing cards and PDP. Retail checkout available.
+•	Approved wholesale user (signed in, wholesale-tagged): Wholesale price visible (with retail price shown as a secondary comparison reference per Figma — both Wholesale and Retail price shown on product cards). Wholesale checkout available.
+
+Pricing display order on product cards (signed in):
+•	Wholesale: $X,XXX (primary)
+•	Retail: $X,XXX (secondary, where applicable per Figma)
+3.4 Page-by-Page Breakdown
+Page	Purpose	Figma Reference
+Homepage	Brand entry point; hero, trade CTA, newest gemstones, Moyo Gems section, testimonials, blog teasers, social feed, newsletter	Yes (provided)
+Marketplace / Collection	Main gemstone listing with filters, search, sort, and bulk actions	Yes (Signed In + Not Signed In states)
+Product Detail Page (PDP)	Individual gemstone detail with full specifications, pricing logic, recommended stones	Yes (Signed In + Not Signed In states)
+About Us	Brand story, values, sourcing process, miners, cutters, designers	Yes (provided)
+Blog – Listing	Stories grid filterable by All / Blog / Video / Podcasts / Case Studies	Yes (provided)
+Blog – Article	Long-form article template with hero image, sections, CTAs, related posts	Yes (provided)
+Contact	Contact form / contact details page	Standard CMS layout
+Login / Sign Up	Account login + create account; also accessible via modal across the site	Yes (provided)
+Trade Account Registration	Wholesale application form (admin review → approval)	Standard form layout
+Account Dashboard	Customer account area (orders, favorites, profile)	Shopify standard
+CMS Pages	Who Mined Your Gem, Who Cut Your Gem, Shipping/Memo + Return, Privacy Policy, California Privacy Policy	Editorial CMS layout
+
+3.4.1 Homepage
+The homepage is the brand entry point and must include the following sections (top to bottom, per Figma):
+•	Hero section with headline "Ethically Sourced Gemstones for Fine Jewelry", supporting body copy, primary CTA "Browse Gemstones", secondary CTA "Trade Login / Sign Up", and a grid of gemstone imagery
+•	"Join Our Trade Program" banner with body copy and "Learn More" CTA
+•	"Newest Gemstones" grid (4 product cards) + "View All Stones" CTA
+•	"About Moyo Gems" section with image + body copy + "Read More" CTA
+•	Moyo Gems product carousel (4-up) with "Shop All Moyo Gems" CTA
+•	"Trusted by Jewelers and Buyers" testimonials section (3 quotes minimum)
+•	"From the Blog" section (3 latest posts: Blog, Video, Podcast formats)
+•	"Follow Us" Instagram / social feed strip
+•	Newsletter signup with email input + Subscribe button
+•	Footer with full ANZA Gems navigation
+3.4.2 Marketplace / Collection Page
+This is the primary commerce page. Two visual states must be implemented: signed-out and signed-in.
+Layout requirements:
+•	Top filter bar: Color swatch picker, Gem Type dropdown, Shape dropdown, Price range, Size range, "All Filters" button
+•	Result count display (e.g., "100 Gems")
+•	Bulk action buttons: Request Selected, Share Selected (and Invoice Selected for trade users per signed-in Figma)
+•	Product row / card list (vertical scroll) with: checkbox (for bulk select), image, gem name, origin, ID number, availability, shape, size, price (signed-in only), Save heart icon
+•	"Load More" pagination button
+•	Footer
+
+Signed-out state specifics:
+•	No prices visible on cards
+•	Clicking Save / Request / Share triggers the "Unlock Exclusive Wholesale Gems" sign-in modal
+•	After 2-3 cards in the list, a modal overlay may also appear inviting sign-in (per Figma)
+3.4.3 Product Detail Page (PDP)
+Each gemstone has a dedicated detail page with two visual states (signed-out and signed-in).
+Top section:
+•	Large product image (with magnifier / zoom)
+•	Gem name (e.g., "Amethyst")
+•	Origin + ID line (e.g., "Tanzania, ID:#######")
+•	Availability count
+•	Shape (e.g., Round)
+•	Size (e.g., 6mm / 1ct)
+•	Price block: "$4,000" for signed-in, "Log in to view price" for signed-out
+•	CTA: "Add to cart" (signed-in) — triggers sign-in modal if signed-out
+
+Specifications block (collapsible / expandable rows):
+•	COLOR: value (e.g., Pinkish Red) — with descriptive paragraph
+•	SHAPE: value (e.g., Emerald) — with descriptive paragraph
+•	Additional titled rows for other attributes (treatment, clarity, origin notes, etc.) — driven by metafields
+
+Recommended Stones section:
+•	Horizontal carousel of 3-4 related stones
+•	Same card structure as the marketplace listing
+•	Save heart icon on each
+3.4.4 About Us Page
+Brand story page. Sections per Figma:
+•	Hero with "About Anza Gems" headline + intro paragraph + dual CTA (Browse Gemstones, Wholesale Login/Sign Up)
+•	Animated / horizontal gemstone strip
+•	Image + "Our Values" section with 5 value pillars: Transparency, Fair Trade, Craftsmanship, Community Empowerment, Sustainability
+•	"‘Anza’ Means a Beginning" centered text section with CTA
+•	3-image story strip showing miners / community
+•	"How We Source" section with 4 columns: Direct from Artisanal Miners, Expert Cutting & Craftsmanship, Design-Ready & Traceable, Community Impact
+•	"Miners" feature card overlay on a group photo
+•	"Meet The People Behind The Gemstones" with tabbed view (Cutters / Designers) and a grid of person cards (image + name + bio + handle + "Shop X's Stones" CTA)
+•	"Check out the latest updates on social media" with social feed strip
+•	Newsletter signup
+•	Footer
+3.4.5 Blog Listing Page
+"Our Stories" listing page. Requirements:
+•	Headline: "Our Stories"
+•	Filter tabs: All / Blog / Video / Podcasts / Case Studies (active state highlighted)
+•	3-column grid of story cards: image, category tag (Blog / Video / Podcasts), title, short description
+•	Pagination or load more
+•	Footer
+3.4.6 Blog Article Page
+Long-form article template. Requirements:
+•	Hero image (full width)
+•	Article title (H1)
+•	Section blocks with subtitle + body copy + Primary/Secondary CTA buttons
+•	Multiple repeating title + paragraph blocks
+•	Bulleted list block
+•	Inline image with caption
+•	Continuing paragraphs
+•	"More Blogs" related posts (3-up grid)
+•	Footer
+3.4.7 Login / Sign Up Page
+•	"Log In" headline
+•	Support copy line
+•	Email field
+•	Password field
+•	"Sign In" button
+•	"Create Account | Forgot Password?" links
+•	Footer (minimal)
+
+Modal version of the same flow must be available throughout the site (triggered from gated CTAs).
+3.4.8 Trade Account Registration Page
+Wholesale application form. Requirements:
+•	Form fields covering: business name, contact name, business type (jeweler / designer / retailer / other), business address, business website, tax / resale certificate (file upload), volume estimate, message / intro
+•	Clear note: "All trade accounts are reviewed manually. You will receive an email once your account is approved."
+•	Submit button
+•	On submit, trigger admin email + create a draft / pending customer in Shopify with the appropriate tag
+3.5 Product Catalog & Data Management
+Data flow (MVP):
+•	Client supplies a product CSV
+•	Developer imports the CSV into Shopify products + variants + metafields
+•	Gemstone-specific attributes stored as Shopify product metafields (one metafield definition per attribute)
+
+Future data flow (post-MVP):
+•	Customer inventory → Gemist Backend → Shopify Product Sync → Shopify Storefront
+•	API integration with Gemist replaces the CSV import
+•	Source-of-truth for inventory remains in Gemist; Shopify mirrors it
+
+Required product metafield namespace structure (recommended):
+•	gem.type (string)
+•	gem.color (string + linked color swatch reference)
+•	gem.shape (string)
+•	gem.size_mm (string, e.g., "6mm")
+•	gem.carat (number_decimal)
+•	gem.origin (string)
+•	gem.cutter (single_line_text or reference to a metaobject)
+•	gem.birthstone (string)
+•	gem.availability_count (number_integer)
+•	gem.gem_id (string — internal Gemist ID)
+•	gem.retail_price (currency — if not handled via variant)
+•	gem.wholesale_price (currency — handled via B2B app)
+•	gem.description_color, gem.description_shape, etc. (multi_line_text for the expandable PDP rows)
+3.6 Search & Filtering Implementation
+Filter	UI Control	Behavior
+Color	Color swatch picker	Multi-select; predefined gem color palette
+Gem Type	Dropdown	Multi-select; from Shopify product metafield
+Shape	Dropdown (Asscher +6 etc.)	Multi-select
+Price Range	Range slider with min/max input	Hidden for guests (no price visible); active for logged-in users only
+Size (carat)	Range slider (e.g., .01 – .50 ct)	Numeric range; tied to carat metafield
+Origin	Dropdown (multi-select)	Country / region of mine (Tanzania, Kenya, etc.)
+Carat Weight	Dropdown or range	Distinct from size; tracked as separate attribute
+Cutter	Dropdown	Linked to cutter directory/profile
+Birthstone	Dropdown	Month-linked tag
+Availability	Toggle / dropdown	In stock vs. all
+
+UX behaviors:
+•	Filters update the result count and grid dynamically (AJAX, no full page reload)
+•	Active filters shown as removable chips above the listing
+•	Mobile: "All Filters" drawer with the same filter set
+•	Sort options: Newest, Price low–high (signed-in only), Price high–low (signed-in only), Carat low–high, Carat high–low
+•	URL parameters must reflect the active filter state (shareable filtered URLs)
+3.7 Save / Favorites System
+•	Heart icon on every product card and PDP
+•	Guest click → triggers sign-in modal
+•	Signed-in click → adds/removes from the user's Favorites list
+•	Favorites accessible from the header ("Favorites" link visible at top right)
+•	Implementation: standard Shopify wishlist app (e.g., Wishlist Plus or similar) OR custom metafield-based solution depending on B2B app capabilities
+3.8 Cart, Checkout & Request Flow
+V1 (MVP) approach:
+•	Wholesale trade users: standard Shopify cart + checkout, with wholesale pricing applied via the B2B app
+•	Retail users: standard Shopify cart + checkout at retail prices
+•	"Request Stone" flow: if Shopify checkout for individual stones cannot be enabled cleanly in V1, support a Request flow where trade users submit a request for the selected stones via a form (notification sent to admin + customer)
+•	"Request Selected" and "Share Selected" bulk actions: use the checkboxes on the listing to compile a list, then submit a request or generate a shareable link
+
+Long-term goal:
+•	Integrate the Gemist gemstone marketplace directly with Shopify checkout so trade users can purchase stones in a single seamless flow
+3.9 Email & Notifications
+•	Trade application submitted → confirmation email to applicant + admin notification email
+•	Trade application approved → approval email with login instructions
+•	Trade application rejected → polite rejection email (optional)
+•	Standard Shopify transactional emails (order confirmation, shipping, etc.) — to be styled to match the brand
+
+4. Technical Decisions & Architecture
+4.1 Confirmed Decisions
+•	Shopify Plan: Shopify Standard (NOT Shopify Plus)
+•	Theme: Custom theme built from the approved Figma designs
+•	Product Source: Initial CSV import (client provides)
+•	Design Source: Approved Figma file (access granted to designerr1403@gmail.com)
+•	Store Access: Granted to developerr6620@gmail.com
+•	Communication: Slack workspace anzagems-dev
+4.2 Recommended B2B Direction
+Because Shopify Plus is NOT being used, wholesale functionality must be implemented via a third-party B2B app. The two leading candidates are:
+•	SparkLayer Wholesale: Strong B2B feature set, role-based pricing, account management, ordering workflows
+•	Wholesale Gorilla: Alternative with similar capabilities and Shopify-native UX
+
+Other options to evaluate if needed:
+•	Locksmith (for gated content / page-level access control)
+•	BSS Commerce (B2B wholesale solution)
+
+Final app selection will be confirmed in Phase 1 (Discovery & Solution Architecture) based on:
+•	Approval flow capabilities (manual admin approval required)
+•	Customer tag / segmentation support
+•	Pricing visibility controls (per-tag pricing)
+•	Storefront customization options
+•	Total cost (client responsibility — see Section 5.2)
+4.3 Architecture Responsibility Split
+Shopify will handle:
+•	Frontend storefront (custom theme)
+•	Customer accounts (login, profile, order history)
+•	Cart and checkout
+•	Product merchandising and collections
+•	CMS / content management
+•	Navigation
+•	Search and filtering integration
+
+Shopify + B2B App (combined) will handle:
+•	Wholesale login workflows
+•	Pricing visibility logic
+•	Trade customer access controls
+•	Customer segmentation by role
+
+Gemist infrastructure will remain responsible for (long-term):
+•	Master gemstone inventory data
+•	Product feed management
+•	Backend gemstone database
+•	Marketplace logic (in future API integration)
+•	Source-of-truth inventory management
+4.4 Open Technical Decisions (to be finalized in Phase 1)
+•	Final wholesale B2B app selection (SparkLayer vs. Wholesale Gorilla)
+•	Final source-of-truth inventory architecture (CSV-only for MVP, API for future)
+•	Real-time inventory sync requirements (current expectation: not real-time in MVP)
+•	Checkout workflow specifics for the "Request Stone" flow vs. direct Shopify checkout
+•	Final pricing rule complexity (single wholesale tier in MVP; tiered pricing is future scope)
+•	Final synchronization frequency between Gemist and Shopify (post-MVP)
+
+5. Constraints, Assumptions, and Out of Scope
+5.1 Assumptions
+This build is based on the following assumptions. If any of these change, scope and timeline may need to be reassessed.
+•	Figma designs are substantially finalized at start of development
+•	Client will supply the product CSV with all required fields prior to data import
+•	Client will supply brand assets (logos, fonts, brand guidelines, photography)
+•	Shopify Partner environment is available and access has been provided
+•	Gemist backend infrastructure exists and is operational
+•	Existing assets and content from the current ShopWired site can be leveraged where applicable
+•	Client feedback cycles will be timely (within agreed turnaround on each milestone)
+5.2 Third-Party Costs (Client Responsibility)
+The following recurring costs are NOT included in the development quote and are the client's responsibility:
+•	Shopify monthly subscription
+•	B2B app monthly subscription (SparkLayer / Wholesale Gorilla / similar)
+•	Any additional Shopify app subscriptions required for filtering, wishlist, search enhancements, etc.
+•	Domain registration and SSL (if applicable)
+•	Email service or transactional email provider (if used outside Shopify)
+5.3 Out of Scope (MVP)
+The following items are explicitly NOT part of the MVP delivery. They are noted here so they can be scoped as separate engagements if needed in future phases.
+•	Migration: no historical order migration, no customer migration, no SEO migration from ShopWired
+•	Real-time inventory sync: MVP uses CSV-imported product data; live API sync is post-MVP
+•	Gemist API integration: deferred to a future phase
+•	Advanced inventory management: reservation logic, multi-channel inventory, multi-location workflows are post-MVP
+•	Tiered wholesale pricing: MVP supports single wholesale tier; tiered pricing, MOQ logic, customer-specific pricing, and regional pricing are future scope
+•	Bulk ordering workflows: spreadsheet ordering, saved order templates, reordering workflows are post-MVP
+•	Multi-vendor marketplace logic: vendor onboarding and multi-seller workflows are post-MVP
+•	ERP integrations: any integration with external ERP, OMS, or accounting systems is out of scope
+•	Custom reporting / analytics dashboards: MVP uses standard Shopify analytics
+•	AI-assisted gemstone discovery / advanced recommendation systems: post-MVP
+•	Mobile native apps: this is a responsive web build only
+5.4 Future Enhancements (Post-MVP)
+Documented here so the architecture choices made in MVP keep these doors open:
+•	Real-time inventory synchronization with Gemist
+•	Reservation logic for stones in active carts
+•	Bulk ordering, saved templates, reorder workflows
+•	MOQ logic and tiered pricing
+•	Customer-specific pricing
+•	Regional pricing rules
+•	Vendor onboarding and multi-seller marketplace workflows
+•	Advanced recommendation systems
+•	Direct Shopify checkout for individual Gemist marketplace stones
+
+6. Timeline & Phased Implementation
+Estimated MVP implementation timeline: approximately 4 weeks. The phases below run partly in parallel, not strictly sequential.
+
+Phase	Title	Key Activities
+1	Discovery & Solution Architecture	Confirm B2B app choice, validate Figma → page mapping, finalize product data structure, plan auth + pricing strategy, environment setup
+2	Shopify Foundation & Configuration	Shopify environment configuration, theme framework setup, customer account configuration, wholesale access setup, B2B app install, navigation + CMS skeleton
+3	Frontend Implementation	Responsive frontend build per Figma, marketplace listing, PDP, search + filtering, authentication flows, trade access prompts, CMS pages
+4	Integration & Business Logic	Product CSV import & sync, pricing visibility logic, role-based access controls, trade approval workflow, product feed validation
+5	QA, UAT & Deployment	Functional QA, responsive testing, workflow validation, UAT support, performance review, production deployment, launch support
+
+6.1 Week 1 — Immediate Next Steps
+•	Theme setup and Shopify configuration
+•	Architecture setup
+•	Figma review and page breakdown
+•	Wholesale workflow planning
+•	Product data structure review
+•	B2B app evaluation and final selection
+•	Environment setup (Partner store, dev store, staging)
+
+7. Dependencies & Access Required
+The following items must be in place from the client side for development to proceed without delays.
+7.1 Shopify
+•	Shopify Partner account access
+•	Development store access (existing dev store OR a new one created under the agreed Partner account)
+•	Developer access granted to: developerr6620@gmail.com
+7.2 Figma
+•	Final Figma file link (received)
+•	Edit access to inspect spacing, styles, and export assets directly
+•	Designer access granted to: designerr1403@gmail.com
+7.3 Slack / Communication
+•	Slack workspace channel: anzagems-dev
+•	Add to project Slack: developerr6620@gmail.com and hemangv22@gmail.com
+7.4 Product Data
+•	Confirm initial product source — CSV or Gemist API (default expectation: CSV)
+•	Latest product CSV file from client
+•	Documentation of CSV fields/columns (gem type, shape, origin, carat, pricing, availability, etc.)
+•	Sample stone images if not embedded in the feed
+•	For future API phase: API documentation + sandbox/test key
+7.5 Branding Assets
+•	ANZA Gems logo (vector preferred)
+•	Brand fonts (license confirmation if applicable)
+•	Brand guidelines (colors, typography, photography direction if available)
+•	Approved high-resolution product photography
+7.6 Wholesale App
+•	Client approval on B2B app choice and subscription
+•	Admin login credentials for the chosen B2B app
+
+8. Additional Notes & Constraints
+8.1 Direct Client Quotes from Discovery
+Verbatim direction from the client (Eric Beato, technical lead) during the discovery call:
+•	"For people that are not signing on the store, they cannot see any pricing information. You cannot see the details of the stones. You can see the stones and the technical information about them, but you cannot do any operation about buying or anything like that if you are not signing."
+•	"Wholesale will be the predominant login, but there may be retail buyers who are authorized to buy at retail."
+•	"Different logins may result in different prices being displayed. It's not administrative access in the Shopify role set — it's customer-based role access from the front side of the site."
+•	"They want to be able to create a flow to approve the wholesale customer. Not everyone can create an account and automatically be a wholesale customer."
+•	"If for V1 we cannot integrate Shopify checkout, then only integrate the request flow, and later on integrate the store purchase. Eventually, the goal is to integrate the Gemist gemstone marketplace with Shopify checkout to enable trade users to purchase on it."
+8.2 Brand Positioning to Preserve
+The current site (ShopWired) is heavily focused on the brand's differentiators. These must remain central in the rebuild:
+•	Ethical sourcing
+•	East African artisanal mining communities (Tanzania, Kenya)
+•	Traceability of every stone from mine to market
+•	Social impact and community empowerment
+•	Artisan cutters and their stories
+•	Transparency of origin
+•	Educational / storytelling commerce approach
+8.3 Strategic Shift from Current Site
+The new Figma direction represents a clear strategic shift:
+•	From: Editorial / storytelling-heavy ecommerce
+•	To: Marketplace-style gemstone discovery with cleaner B2B/B2C hybrid UX, faster browsing and filtering, wholesale-first interaction patterns while still supporting retail
+
+The redesign is more aligned with wholesale buyers, jewelers, repeat buyers, and procurement-style shopping, while still preserving consumer-facing retail support. Editorial and brand-storytelling pages (Homepage, About, Blog) remain — the architecture is a marketplace + editorial hybrid, not pure catalog commerce.
+8.4 Key UX Patterns to Replicate from Figma
+•	Modal-first authentication — sign-in is part of the sales funnel, not just an account management feature
+•	Faceted, swatch-based color filtering as a primary discovery pattern
+•	Compact horizontal product rows with attribute-first layout (not heavy hero-image cards)
+•	Bulk selection workflow (checkboxes on listing rows → Request / Share / Invoice bulk actions)
+•	Expandable / collapsible attribute rows on the PDP rather than long-form text
+•	Recommended Stones strip on PDPs (horizontal, scrollable)
+•	Clean minimalist presentation overall — clear hierarchy, generous whitespace
+8.5 Performance & Quality Expectations
+•	Fully responsive across desktop, tablet, and mobile (no separate mobile site)
+•	Cross-browser support: latest 2 versions of Chrome, Safari, Firefox, Edge; iOS Safari; Android Chrome
+•	Page load performance: aim for Lighthouse mobile performance score 70+ on key templates (Home, Marketplace, PDP)
+•	Accessibility: meet basic WCAG 2.1 AA where reasonably achievable (alt text, color contrast, keyboard nav, form labels)
+•	SEO: clean title tags, meta descriptions, structured data on products, sitemap, robots.txt
+•	Code quality: clean Liquid, organized SCSS / CSS, modular JS, properly commented; no inline styles or hardcoded strings where they should be in settings or metafields
+8.6 Handover Requirements
+At project end, the developer must hand over:
+•	Theme code repository (Git, with clean commit history) OR Shopify theme file
+•	List of installed Shopify apps + their roles
+•	Admin documentation: how to add a new gemstone, how to approve a trade account, how to manage filters, how to edit homepage sections, how to publish a blog post
+•	Metafield definitions documented (with namespace.key and purpose for each)
+•	Known limitations or pending items list (if any)
+•	UAT sign-off checklist
+
+9. Quick Developer Checklist
+A condensed pre-flight list for the developer before starting Week 1.
+•	Confirmed Shopify Partner + dev store access
+•	Confirmed Figma file access (view + inspect)
+•	Joined the anzagems-dev Slack channel
+•	Reviewed all Figma frames (Home, Marketplace signed-in + signed-out, PDP signed-in + signed-out, About Us, Blog listing, Blog article, Login, Modal sign-in)
+•	Reviewed the product CSV and confirmed all required fields are present
+•	Received brand assets (logo, fonts, brand guidelines)
+•	Confirmed B2B app choice with the project manager (SparkLayer / Wholesale Gorilla)
+•	Set up the local dev environment + Shopify CLI
+•	Mapped Figma pages → Shopify templates 1:1 before writing code
+•	Defined the metafield schema in Shopify admin before importing the CSV
+•	Set up the customer tag taxonomy: pending-wholesale, approved-wholesale, retail
+•	Confirmed test customer accounts for each role (guest, retail, pending, approved)
+
+
+— End of Document —
+Prepared for the development team. For clarifications, contact the project manager via Slack (anzagems-dev).
+
+
+
+
+
+
+
+
+
+

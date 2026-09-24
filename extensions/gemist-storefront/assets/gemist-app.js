@@ -806,13 +806,15 @@
         thumb.src = src;
         thumb.alt = "";
         button.appendChild(thumb);
-        button.addEventListener("click", () => {
+        const handleSelect = () => {
           hero.src = src;
           thumbs.querySelectorAll("[aria-current]").forEach((el) => {
             el.removeAttribute("aria-current");
           });
           button.setAttribute("aria-current", "true");
-        });
+        };
+        button.addEventListener("click", handleSelect);
+        button.addEventListener("mouseenter", handleSelect);
         thumbs.appendChild(button);
       });
       media.appendChild(thumbs);

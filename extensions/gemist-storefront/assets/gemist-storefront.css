@@ -308,7 +308,8 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0.65rem 0.85rem;
-  margin-top: 1.25rem;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
 }
 
 .gemist-products__page-btn,
