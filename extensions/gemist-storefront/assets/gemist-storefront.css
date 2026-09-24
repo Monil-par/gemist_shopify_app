@@ -1,0 +1,1031 @@
+.gemist-card {
+  --gemist-bg: var(--gemist-setting-bg, #ffffff);
+  --gemist-text: var(--gemist-setting-text, #1a1a1a);
+  --gemist-muted: color-mix(in srgb, var(--gemist-text) 62%, transparent);
+  --gemist-accent: var(--gemist-setting-accent, #1f6feb);
+  --gemist-border: color-mix(in srgb, var(--gemist-text) 12%, transparent);
+  --gemist-radius: var(--gemist-setting-radius, 16px);
+
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--gemist-card-max-width, none);
+  color: var(--gemist-text);
+  background: var(--gemist-bg);
+  border: 1px solid var(--gemist-border);
+  border-radius: var(--gemist-radius);
+  padding: var(--gemist-card-padding, 1.25rem 1.35rem);
+  font-family: inherit;
+}
+
+.gemist-card *,
+.gemist-card *::before,
+.gemist-card *::after {
+  box-sizing: border-box;
+}
+
+.gemist-card__eyebrow {
+  margin: 0 0 0.45rem;
+  font-size: var(--gemist-card-eyebrow-size, 0.75rem);
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gemist-accent);
+}
+
+.gemist-card__headline {
+  margin: 0;
+  font-size: var(--gemist-card-title-size, clamp(1.15rem, 2vw, 1.5rem));
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.gemist-card__summary {
+  margin: 0.65rem 0 0;
+  color: var(--gemist-muted);
+  font-size: var(--gemist-card-body-size, 0.95rem);
+  line-height: 1.55;
+}
+
+.gemist-card__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
+  gap: 0.75rem;
+  margin: 1.1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gemist-card__stat {
+  padding: 0.75rem 0.85rem;
+  border: 1px solid var(--gemist-border);
+  border-radius: calc(var(--gemist-radius) - 6px);
+  background: color-mix(in srgb, var(--gemist-bg) 88%, var(--gemist-accent) 12%);
+}
+
+.gemist-card__stat-label {
+  display: block;
+  margin-bottom: 0.2rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--gemist-muted);
+}
+
+.gemist-card__stat-value {
+  display: block;
+  font-size: 1rem;
+  font-weight: 650;
+  line-height: 1.3;
+}
+
+.gemist-card__cta {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 1.1rem;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  background: var(--gemist-accent);
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.gemist-card__cta:hover,
+.gemist-card__cta:focus-visible {
+  filter: brightness(1.05);
+}
+
+.gemist-card--empty {
+  border-style: dashed;
+  background: color-mix(in srgb, var(--gemist-bg) 92%, var(--gemist-accent) 8%);
+}
+
+.gemist-card--empty .gemist-card__headline {
+  font-size: 1.05rem;
+}
+
+.gemist-card--stacked .gemist-card__stats {
+  grid-template-columns: 1fr;
+}
+
+.gemist-card--inline .gemist-card__stats {
+  grid-template-columns: repeat(auto-fit, minmax(6.5rem, 1fr));
+}
+
+.gemist-embed {
+  position: fixed;
+  z-index: 9999;
+  width: var(--gemist-embed-width, auto);
+  max-width: min(var(--gemist-embed-width, 22rem), calc(100vw - 2rem));
+}
+
+.gemist-embed--bottom-right {
+  right: 1rem;
+  bottom: 1rem;
+}
+
+.gemist-embed--bottom-left {
+  left: 1rem;
+  bottom: 1rem;
+}
+
+.gemist-embed .gemist-card {
+  box-shadow: 0 12px 40px color-mix(in srgb, #000 18%, transparent);
+}
+
+.gemist-products {
+  --gemist-bg: var(--gemist-setting-bg, #ffffff);
+  --gemist-text: var(--gemist-setting-text, #1a1a1a);
+  --gemist-muted: color-mix(in srgb, var(--gemist-text) 62%, transparent);
+  --gemist-accent: var(--gemist-setting-accent, #1f6feb);
+  --gemist-border: color-mix(in srgb, var(--gemist-text) 12%, transparent);
+  --gemist-radius: var(--gemist-setting-radius, 16px);
+
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--gemist-section-padding, 0);
+  color: var(--gemist-text);
+}
+
+.gemist-products__heading {
+  margin: 0 0 var(--gemist-heading-margin, 1.1rem);
+  color: var(--gemist-heading-color, var(--gemist-text));
+  font-size: var(--gemist-heading-size, clamp(1.35rem, 2.4vw, 1.85rem));
+  font-weight: var(--gemist-heading-weight, 600);
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  text-align: var(--gemist-heading-align, left);
+}
+
+.gemist-products__status {
+  margin: 0;
+  color: var(--gemist-muted);
+  font-size: 0.95rem;
+}
+
+.gemist-products__grid {
+  display: grid;
+  grid-template-columns: repeat(var(--gemist-cols, 3), minmax(0, 1fr));
+  gap: var(--gemist-gap, 1rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gemist-product-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+  max-width: var(--gemist-card-max-width, none);
+  margin-inline: auto;
+  color: inherit;
+  text-decoration: none;
+  background: var(
+    --gemist-card-bg,
+    var(--gemist-bg, var(--gemist-setting-bg, #ffffff))
+  );
+  border: var(--gemist-card-border-width, 1px) solid
+    var(
+      --gemist-card-border-color,
+      var(
+        --gemist-border,
+        color-mix(in srgb, var(--gemist-setting-text, #1a1a1a) 12%, transparent)
+      )
+    );
+  border-radius: var(--gemist-radius, var(--gemist-setting-radius, 16px));
+  box-shadow: none;
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.gemist-products[data-card-shadow="soft"] .gemist-product-card {
+  box-shadow: 0 6px 18px color-mix(in srgb, #000 8%, transparent);
+}
+
+.gemist-products[data-card-shadow="medium"] .gemist-product-card {
+  box-shadow: 0 10px 28px color-mix(in srgb, #000 12%, transparent);
+}
+
+.gemist-products[data-card-shadow="strong"] .gemist-product-card {
+  box-shadow: 0 16px 40px color-mix(in srgb, #000 18%, transparent);
+}
+
+.gemist-product-card__link {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+}
+
+.gemist-product-card:hover,
+.gemist-product-card:focus-within {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px color-mix(in srgb, #000 12%, transparent);
+}
+
+.gemist-product-card--skeleton {
+  pointer-events: none;
+}
+
+.gemist-skel {
+  display: block;
+  height: 0.85rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--gemist-text) 10%, transparent);
+  animation: gemist-pulse 1.1s ease-in-out infinite;
+}
+
+.gemist-skel--title {
+  width: 70%;
+  height: 1rem;
+}
+
+.gemist-skel--line {
+  width: 46%;
+  margin-top: 0.45rem;
+}
+
+@keyframes gemist-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.gemist-product-card__image {
+  display: block;
+  width: 100%;
+  height: var(--gemist-image-size, auto);
+  aspect-ratio: var(--gemist-image-ratio, 1);
+  object-fit: var(--gemist-image-fit, cover);
+  border-radius: var(--gemist-image-radius, 0);
+  background: color-mix(in srgb, var(--gemist-setting-bg, #fff) 88%, var(--gemist-setting-accent, #1f6feb) 12%);
+}
+
+.gemist-product-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: var(--gemist-card-padding, 1rem);
+  padding-bottom: 0.55rem;
+}
+
+.gemist-product-card__title {
+  margin: 0;
+  color: var(--gemist-title-color, var(--gemist-text, #1a1a1a));
+  font-size: var(--gemist-title-size, 1rem);
+  font-weight: var(--gemist-title-weight, 600);
+  line-height: 1.35;
+}
+
+.gemist-product-card__subtitle {
+  margin: 0;
+  color: var(
+    --gemist-body-color,
+    var(--gemist-muted, color-mix(in srgb, var(--gemist-setting-text, #1a1a1a) 62%, transparent))
+  );
+  font-size: var(--gemist-body-size, 0.85rem);
+  font-weight: var(--gemist-body-weight, 400);
+  line-height: 1.45;
+}
+
+.gemist-product-card__price {
+  margin: 0.25rem 0 0;
+  color: var(--gemist-price-color, var(--gemist-setting-accent, var(--gemist-accent, #1f6feb)));
+  font-size: var(--gemist-price-size, 0.95rem);
+  font-weight: var(--gemist-price-weight, 650);
+}
+
+.gemist-products__pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem 0.85rem;
+  margin-top: 1.25rem;
+}
+
+.gemist-products__page-btn,
+.gemist-products__page-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.25rem;
+  padding: 0 0.8rem;
+  border: 1px solid var(--gemist-border);
+  border-radius: 999px;
+  color: inherit;
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 600;
+  background: var(--gemist-bg);
+}
+
+.gemist-products__page-btn[aria-disabled="true"] {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.gemist-products__page-num[aria-current="page"],
+.gemist-products__page-btn:hover,
+.gemist-products__page-num:hover {
+  border-color: var(--gemist-accent);
+  color: var(--gemist-accent);
+}
+
+.gemist-products__page-numbers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.gemist-products__page-status {
+  margin: 0;
+  color: var(--gemist-muted);
+  font-size: 0.88rem;
+}
+
+/* ── Product detail (luxury PDP) ── */
+
+.gemist-detail {
+  --gemist-lux-primary: var(--gemist-setting-text, #111111);
+  --gemist-lux-secondary: color-mix(
+    in srgb,
+    var(--gemist-setting-text, #111111) 62%,
+    transparent
+  );
+  --gemist-lux-muted: color-mix(
+    in srgb,
+    var(--gemist-setting-text, #111111) 45%,
+    transparent
+  );
+  --gemist-lux-border: color-mix(
+    in srgb,
+    var(--gemist-setting-text, #111111) 12%,
+    #e5e5e5
+  );
+  --gemist-lux-surface: color-mix(
+    in srgb,
+    var(--gemist-setting-bg, #ffffff) 94%,
+    var(--gemist-setting-text, #111111) 6%
+  );
+  --gemist-lux-bg: var(--gemist-setting-bg, #ffffff);
+  --gemist-lux-accent: var(--gemist-setting-accent, #111111);
+
+  box-sizing: border-box;
+  width: min(1400px, calc(100% - 64px));
+  max-width: 100%;
+  margin: 0 auto;
+  padding: clamp(2.5rem, 5vw, 4rem) 0 clamp(3rem, 6vw, 5rem);
+  color: var(--gemist-lux-primary);
+  background: var(--gemist-lux-bg);
+  font-family: inherit;
+  -webkit-font-smoothing: antialiased;
+}
+
+.gemist-detail *,
+.gemist-detail *::before,
+.gemist-detail *::after {
+  box-sizing: border-box;
+}
+
+.gemist-designer-page {
+  --gemist-lux-primary: var(--gemist-setting-text, #111111);
+  --gemist-lux-secondary: color-mix(
+    in srgb,
+    var(--gemist-setting-text, #111111) 62%,
+    transparent
+  );
+  --gemist-lux-muted: color-mix(
+    in srgb,
+    var(--gemist-setting-text, #111111) 45%,
+    transparent
+  );
+  --gemist-lux-border: color-mix(
+    in srgb,
+    var(--gemist-setting-text, #111111) 12%,
+    #e5e5e5
+  );
+  --gemist-lux-surface: color-mix(
+    in srgb,
+    var(--gemist-setting-bg, #ffffff) 94%,
+    var(--gemist-setting-text, #111111) 6%
+  );
+  --gemist-lux-bg: var(--gemist-setting-bg, #ffffff);
+  --gemist-lux-accent: var(--gemist-setting-accent, #111111);
+
+  color: var(--gemist-lux-primary);
+  background: var(--gemist-lux-bg);
+  width: min(1400px, calc(100% - 64px));
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.gemist-designer-page__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(420px, 0.8fr);
+  gap: clamp(2rem, 4vw, 3.5rem) clamp(2rem, 5vw, 4.5rem);
+  align-items: start;
+}
+
+.gemist-designer-page__layout > .gemist-detail__back {
+  grid-column: 1 / -1;
+}
+
+.gemist-detail__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(min(100%, 420px), 0.8fr);
+  gap: clamp(2rem, 4vw, 3.5rem) clamp(2rem, 5vw, 4.5rem);
+  align-items: start;
+}
+
+.gemist-detail__back {
+  grid-column: 1 / -1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0 0 1.5rem;
+  color: var(--gemist-lux-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.gemist-detail__back:hover,
+.gemist-detail__back:focus-visible {
+  color: var(--gemist-lux-primary);
+  outline: none;
+}
+
+.gemist-detail__back-arrow {
+  font-size: 0.95em;
+  line-height: 1;
+}
+
+.gemist-detail__media,
+.gemist-detail__info {
+  min-width: 0;
+}
+
+.gemist-detail__media {
+  width: 100%;
+}
+
+.gemist-detail__hero-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: min(var(--gemist-detail-image-size, 520px), 70vh);
+  padding: clamp(1.5rem, 4vw, 3rem);
+  border-radius: var(--gemist-detail-radius, 18px);
+  background: var(--gemist-lux-surface);
+  overflow: hidden;
+}
+
+.gemist-detail__hero {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  max-height: min(var(--gemist-detail-image-size, 520px), 62vh);
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: contain;
+  object-position: center;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  transition: opacity 0.25s ease;
+}
+
+.gemist-detail__hero--spin {
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.gemist-detail__hero--spin:active {
+  cursor: grabbing;
+}
+
+.gemist-detail__rotate {
+  margin: 0.75rem 0 0;
+  color: var(--gemist-lux-muted);
+  font-size: 0.8125rem;
+  text-align: center;
+}
+
+.gemist-detail__thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+  margin-top: 1rem;
+}
+
+.gemist-detail__thumb {
+  width: var(--gemist-detail-thumb-size, 5rem);
+  flex: 0 0 auto;
+  padding: 0;
+  border: 1px solid var(--gemist-lux-border);
+  border-radius: calc(var(--gemist-detail-radius, 18px) - 6px);
+  overflow: hidden;
+  background: var(--gemist-lux-bg);
+  cursor: pointer;
+  transition: border-color 0.2s ease, opacity 0.2s ease;
+}
+
+.gemist-detail__thumb:hover {
+  border-color: color-mix(in srgb, var(--gemist-lux-primary) 35%, var(--gemist-lux-border));
+}
+
+.gemist-detail__thumb[aria-current="true"] {
+  border-color: var(--gemist-lux-accent);
+  border-width: 1.5px;
+}
+
+.gemist-detail__thumb img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.gemist-detail__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+  max-width: 36rem;
+}
+
+.gemist-detail__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.gemist-detail__eyebrow {
+  margin: 0 0 0.75rem;
+  color: var(--gemist-lux-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.gemist-detail__title {
+  margin: 0;
+  color: var(--gemist-lux-primary);
+  font-size: var(--gemist-detail-title-size, clamp(2.25rem, 4.5vw, 3.125rem));
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.gemist-detail__price {
+  margin: 1rem 0 0;
+  color: var(--gemist-lux-accent);
+  font-size: var(--gemist-detail-price-size, 1.875rem);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.gemist-detail__description {
+  margin: 1.25rem 0 0;
+  max-width: 34rem;
+  color: var(--gemist-lux-secondary);
+  font-size: var(--gemist-detail-body-size, 1.0625rem);
+  line-height: 1.65;
+}
+
+.gemist-detail__sku {
+  margin: 0;
+  color: var(--gemist-lux-secondary);
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+.gemist-detail__meta-block {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--gemist-lux-border);
+}
+
+.gemist-detail__meta-heading,
+.gemist-detail__specs-heading {
+  margin: 0 0 1rem;
+  color: var(--gemist-lux-muted);
+  font-size: var(--gemist-detail-specs-heading-size, 0.75rem);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.gemist-detail__meta {
+  display: grid;
+  gap: 0;
+  margin: 0;
+}
+
+.gemist-detail__meta-row {
+  display: grid;
+  grid-template-columns: minmax(8rem, 1fr) minmax(0, 1.4fr);
+  gap: 1rem;
+  align-items: baseline;
+  padding: 0.625rem 0;
+  border-bottom: 1px solid var(--gemist-lux-border);
+}
+
+.gemist-detail__meta-row:last-child {
+  border-bottom: 0;
+}
+
+.gemist-detail__meta-row dt {
+  margin: 0;
+  color: var(--gemist-lux-muted);
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.gemist-detail__meta-row dd {
+  margin: 0;
+  color: var(--gemist-lux-primary);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.gemist-detail__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+.gemist-detail__cart {
+  display: contents;
+}
+
+.gemist-detail__add {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 3.375rem;
+  padding: 0 1.5rem;
+  border: 1px solid var(--gemist-lux-accent);
+  border-radius: 0.5rem;
+  background: var(--gemist-lux-accent);
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  transition: background 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+}
+
+.gemist-detail__add:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--gemist-lux-accent) 88%, #000);
+  border-color: color-mix(in srgb, var(--gemist-lux-accent) 88%, #000);
+}
+
+.gemist-detail__add:focus-visible {
+  outline: 2px solid var(--gemist-lux-accent);
+  outline-offset: 2px;
+}
+
+.gemist-detail__add:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+
+.gemist-detail__secondary {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 3.375rem;
+  padding: 0 1.5rem;
+  border: 1px solid var(--gemist-lux-primary);
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--gemist-lux-primary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.gemist-detail__secondary:hover,
+.gemist-detail__secondary:focus-visible {
+  background: var(--gemist-lux-surface);
+  outline: none;
+}
+
+.gemist-detail__tertiary {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  margin-top: 0.25rem;
+  padding: 0.35rem 0;
+  border: 0;
+  background: transparent;
+  color: var(--gemist-lux-secondary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.gemist-detail__tertiary:hover,
+.gemist-detail__tertiary:focus-visible {
+  color: var(--gemist-lux-accent);
+  outline: none;
+}
+
+.gemist-detail__cart-error {
+  margin: 0;
+  color: #b42318;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+.gemist-detail__cart-error[hidden],
+.gemist-detail__cart-error:empty {
+  display: none !important;
+}
+
+.gemist-detail__specs-section {
+  margin-top: var(--gemist-detail-specs-section-gap, 2.5rem);
+  padding-top: calc(var(--gemist-detail-specs-section-gap, 40px) * 0.5);
+  border-top: 1px solid var(--gemist-lux-border);
+}
+
+.gemist-detail__specs-heading {
+  margin: 0 0 1rem;
+  color: var(--gemist-lux-muted);
+  font-size: var(--gemist-detail-specs-heading-size, 0.75rem);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.gemist-detail__specs {
+  display: grid;
+  grid-template-columns: repeat(var(--gemist-detail-specs-columns, 2), minmax(0, 1fr));
+  gap: 0 var(--gemist-detail-specs-column-gap, 2rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gemist-detail__specs li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: calc(var(--gemist-detail-specs-row-gap, 12px) * 0.5) 0;
+  border-bottom: 1px solid var(--gemist-lux-border);
+}
+
+.gemist-detail__spec-label {
+  color: var(--gemist-lux-muted);
+  font-size: var(--gemist-detail-specs-label-size, 0.875rem);
+  font-weight: 400;
+  line-height: 1.35;
+  text-transform: capitalize;
+}
+
+.gemist-detail__spec-value {
+  color: var(--gemist-lux-primary);
+  font-size: var(--gemist-detail-specs-value-size, 1rem);
+  font-weight: 500;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.gemist-retry {
+  appearance: none;
+  margin-top: 0.75rem;
+  border: 1px solid var(--gemist-lux-primary);
+  background: transparent;
+  color: var(--gemist-lux-primary);
+  border-radius: 0.5rem;
+  padding: 0.55rem 0.85rem;
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.gemist-product-card__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.35rem var(--gemist-card-padding, 1rem) var(--gemist-card-padding, 1rem);
+}
+
+.gemist-product-card__actions a {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--gemist-setting-accent, #1f6feb);
+  background: transparent;
+  color: var(--gemist-setting-accent, #1f6feb);
+  border-radius: 999px;
+  padding: 0.7rem 1.25rem;
+  min-height: 2.75rem;
+  font: inherit;
+  font-weight: 650;
+  text-decoration: none;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.gemist-designer {
+  display: grid;
+  gap: 0.65rem;
+  margin: 1rem 0 0;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--gemist-border, #e6e6e6);
+  border-radius: var(--gemist-detail-radius, 12px);
+}
+
+.gemist-designer__heading {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 650;
+}
+
+.gemist-designer__status {
+  margin: 0;
+  color: var(--gemist-muted);
+  font-size: 0.85rem;
+}
+
+.gemist-designer__field {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.gemist-designer__field select,
+.gemist-designer__field input {
+  font: inherit;
+  padding: 0.55rem 0.7rem;
+  border-radius: 8px;
+  border: 1px solid var(--gemist-border, #d0d0d0);
+  background: #fff;
+}
+
+.gemist-designer__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.gemist-designer__chip {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid var(--gemist-border, #d0d0d0);
+  background: #fff;
+  color: inherit;
+  border-radius: 999px;
+  padding: 0.4rem 0.7rem;
+  font: inherit;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.gemist-designer__chip[aria-pressed="true"] {
+  border-color: var(--gemist-setting-accent, #1f6feb);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--gemist-setting-accent, #1f6feb) 25%, transparent);
+}
+
+.gemist-designer__swatch {
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  flex: 0 0 auto;
+}
+
+@media (min-width: 990px) {
+  .gemist-detail__info {
+    position: sticky;
+    top: 2rem;
+    align-self: start;
+    max-width: none;
+  }
+}
+
+@media (max-width: 989px) {
+  .gemist-detail {
+    width: calc(100% - 2rem);
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+  }
+
+  .gemist-designer-page__layout,
+  .gemist-detail__layout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .gemist-detail__info {
+    max-width: none;
+    position: static;
+  }
+
+  .gemist-detail__title {
+    max-width: none;
+    font-size: var(--gemist-detail-title-size, clamp(2rem, 6vw, 2.625rem));
+  }
+
+  .gemist-detail__specs {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
+
+@media (max-width: 749px) {
+  .gemist-detail {
+    width: calc(100% - 1.5rem);
+    padding-top: 1.5rem;
+    padding-bottom: 2.5rem;
+  }
+
+  .gemist-detail__hero-frame {
+    min-height: auto;
+    padding: 1.25rem;
+  }
+
+  .gemist-detail__hero {
+    max-height: min(var(--gemist-detail-image-size, 420px), 55vh);
+  }
+
+  .gemist-detail__thumbs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 0.25rem;
+  }
+
+  .gemist-detail__thumbs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .gemist-detail__meta-row {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+  }
+
+  .gemist-detail__add,
+  .gemist-detail__secondary {
+    min-height: 3.25rem;
+  }
+
+  .gemist-product-card__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .gemist-card {
+    padding: 1rem;
+  }
+
+  .gemist-products__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .gemist-embed {
+    left: 1rem;
+    right: 1rem;
+    max-width: none;
+  }
+}

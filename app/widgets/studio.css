@@ -1,0 +1,898 @@
+.gemist-widget-library {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  width: 100%;
+}
+
+.gemist-widget-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  overflow: hidden;
+  background: #fff;
+}
+
+.gemist-widget-card--boxed {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.gemist-widget-card__preview {
+  position: relative;
+  min-height: 11.5rem;
+  padding: 1rem 1rem 0.75rem;
+  overflow: hidden;
+}
+
+.gemist-widget-card__preview[data-tone="mint"] {
+  background:
+    repeating-linear-gradient(
+      -32deg,
+      transparent,
+      transparent 10px,
+      rgb(255 255 255 / 35%) 10px,
+      rgb(255 255 255 / 35%) 20px
+    ),
+    linear-gradient(160deg, #dff5e8, #c8ebd8);
+}
+
+.gemist-widget-card__preview[data-tone="sky"] {
+  background:
+    repeating-linear-gradient(
+      -32deg,
+      transparent,
+      transparent 10px,
+      rgb(255 255 255 / 35%) 10px,
+      rgb(255 255 255 / 35%) 20px
+    ),
+    linear-gradient(160deg, #dcebff, #c5dbfb);
+}
+
+.gemist-widget-card__preview[data-tone="sand"] {
+  background:
+    repeating-linear-gradient(
+      -32deg,
+      transparent,
+      transparent 10px,
+      rgb(255 255 255 / 35%) 10px,
+      rgb(255 255 255 / 35%) 20px
+    ),
+    linear-gradient(160deg, #f4ecd8, #ead9b8);
+}
+
+.gemist-widget-card__preview[data-tone="lilac"] {
+  background:
+    repeating-linear-gradient(
+      -32deg,
+      transparent,
+      transparent 10px,
+      rgb(255 255 255 / 35%) 10px,
+      rgb(255 255 255 / 35%) 20px
+    ),
+    linear-gradient(160deg, #ebe4f8, #d9cef0);
+}
+
+.gemist-widget-card__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 1rem 1.1rem 1.1rem;
+}
+
+.gemist-widget-card__title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.gemist-widget-card__title {
+  margin: 0;
+  color: #111827;
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.gemist-widget-card__badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.15rem 0.55rem;
+  background: #dcfce7;
+  color: #166534;
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+}
+
+.gemist-widget-card__copy {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.gemist-widget-card__placement {
+  margin: 0;
+  color: #9ca3af;
+  font-size: 0.75rem;
+}
+
+.gemist-widget-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 0.35rem;
+}
+
+.gemist-widget-card__btn {
+  display: none;
+}
+
+.gemist-widget-mini {
+  width: 100%;
+  max-width: 15rem;
+  margin: 0 auto;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 10px 28px rgb(15 23 42 / 12%);
+  overflow: hidden;
+}
+
+.gemist-widget-mini--wide {
+  max-width: 100%;
+}
+
+.gemist-widget-mini__bar {
+  display: flex;
+  gap: 0.45rem;
+  padding: 0.65rem 0.7rem 0.35rem;
+}
+
+.gemist-widget-mini__swatch {
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #d7dee8, #c8b273);
+}
+
+.gemist-widget-mini__lines {
+  flex: 1;
+  display: grid;
+  gap: 0.28rem;
+  align-content: center;
+}
+
+.gemist-widget-mini__line {
+  height: 0.35rem;
+  border-radius: 999px;
+  background: #e5e7eb;
+}
+
+.gemist-widget-mini__line--short {
+  width: 55%;
+}
+
+.gemist-widget-mini__line--mid {
+  width: 75%;
+}
+
+.gemist-widget-mini__price {
+  margin: 0;
+  padding: 0 0.7rem;
+  color: #1f6feb;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.gemist-widget-mini__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  padding: 0.45rem 0.7rem 0.75rem;
+}
+
+.gemist-widget-mini__chip {
+  height: 1.15rem;
+  min-width: 2.4rem;
+  border-radius: 999px;
+  background: #eef2f7;
+  border: 1px solid #dbe3ec;
+}
+
+.gemist-widget-mini__chip[data-on="true"] {
+  background: #dbeafe;
+  border-color: #93c5fd;
+}
+
+.gemist-widget-mini__cta {
+  margin: 0 0.7rem 0.75rem;
+  height: 1.55rem;
+  border-radius: 8px;
+  background: #1f6feb;
+}
+
+.gemist-widget-mini-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.4rem;
+  padding: 0.7rem;
+}
+
+.gemist-widget-mini-grid article {
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #e8ebef;
+}
+
+.gemist-widget-mini-grid__img {
+  height: 2.6rem;
+  background: linear-gradient(135deg, #d7dee8, #f3f5f8 55%, #c8b273);
+}
+
+.gemist-widget-mini-grid__body {
+  padding: 0.35rem;
+  display: grid;
+  gap: 0.22rem;
+}
+
+.gemist-widget-customize {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(19rem, 22rem);
+  gap: 1rem;
+  align-items: start;
+}
+
+.gemist-widget-customize__preview {
+  border: 1px solid #e3e5e8;
+  border-radius: 14px;
+  overflow: auto;
+  background: #f3f4f6;
+  max-height: min(70vh, 42rem);
+}
+
+.gemist-widget-customize__controls {
+  display: grid;
+  gap: 0.85rem;
+  padding: 0;
+  border: 1px solid #e3e5e8;
+  border-radius: 14px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.gemist-studio-panel-head {
+  padding: 1rem 1.05rem 0.85rem;
+  border-bottom: 1px solid #eef0f3;
+  background: #fafafa;
+}
+
+.gemist-studio-panel-title {
+  margin: 0;
+  color: #111827;
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.gemist-studio-panel-copy {
+  margin: 0.35rem 0 0;
+  color: #6b7280;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.gemist-studio-group {
+  padding: 0.85rem 1.05rem;
+  border-bottom: 1px solid #eef0f3;
+}
+
+.gemist-studio-group:last-of-type {
+  border-bottom: none;
+}
+
+.gemist-studio-group--advanced {
+  padding: 1rem 1.05rem 1.2rem;
+  background: linear-gradient(180deg, #f8fafc 0%, #fff 100%);
+}
+
+.gemist-studio-group--advanced .gemist-studio-group__title {
+  margin-bottom: 0.55rem;
+}
+
+.gemist-studio-group--advanced .gemist-studio-group__body {
+  gap: 0;
+}
+
+.gemist-studio-css {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.gemist-studio-css__intro {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: #4b5563;
+}
+
+.gemist-studio-css__editor {
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow:
+    0 1px 2px rgb(15 23 42 / 5%),
+    inset 0 1px 0 rgb(255 255 255 / 80%);
+}
+
+.gemist-studio-css__editor-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.5rem 0.8rem;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.gemist-studio-css__badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.35rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 6px;
+  background: #111827;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.gemist-studio-css__meta {
+  font-size: 0.72rem;
+  color: #9ca3af;
+  font-variant-numeric: tabular-nums;
+}
+
+.gemist-studio-css__textarea {
+  display: block;
+  width: 100%;
+  min-height: 11.5rem;
+  max-height: 22rem;
+  resize: vertical;
+  margin: 0;
+  padding: 0.9rem 1rem;
+  border: 0;
+  background: #fbfcfd;
+  color: #111827;
+  font: 0.8125rem/1.65 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  tab-size: 2;
+  white-space: pre;
+}
+
+.gemist-studio-css__textarea::placeholder {
+  color: #9ca3af;
+  opacity: 1;
+}
+
+.gemist-studio-css__textarea:focus {
+  outline: none;
+  background: #fff;
+  box-shadow: inset 0 0 0 2px rgb(31 111 235 / 18%);
+}
+
+.gemist-studio-group__title {
+  margin: 0 0 0.7rem;
+  color: #6b7280;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.gemist-studio-group__body {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.gemist-studio-option {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.gemist-studio-option--color {
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.gemist-studio-option__label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  color: #111827;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.gemist-studio-option__value {
+  min-width: 2.75rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  background: #f3f4f6;
+  color: #374151;
+  font-size: 0.75rem;
+  font-weight: 650;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.gemist-studio-option__range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 0.35rem;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    #111827 0%,
+    #111827 var(--range-progress, 50%),
+    #e5e7eb var(--range-progress, 50%),
+    #e5e7eb 100%
+  );
+  outline: none;
+  cursor: pointer;
+  touch-action: none;
+}
+
+.gemist-studio-option__range:active {
+  cursor: grabbing;
+}
+
+.gemist-studio-option__range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background: #111827;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 22%);
+  cursor: grab;
+}
+
+.gemist-studio-option__range:active::-webkit-slider-thumb {
+  cursor: grabbing;
+}
+
+.gemist-studio-option__range::-moz-range-thumb {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background: #111827;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 22%);
+  cursor: grab;
+}
+
+.gemist-studio-option__color {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 7.5rem;
+  padding: 0.3rem 0.45rem 0.3rem 0.3rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.gemist-studio-option__color input[type="color"] {
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.gemist-studio-option__hex {
+  color: #4b5563;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-transform: uppercase;
+}
+
+.gemist-studio-option__select {
+  width: 100%;
+  font: inherit;
+  font-size: 0.88rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+  color: #111827;
+}
+
+.gemist-studio-panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  padding: 0.9rem 1.05rem 1.05rem;
+  border-top: 1px solid #eef0f3;
+  background: #fafafa;
+}
+
+.gemist-studio-preview {
+  --gemist-setting-bg: #ffffff;
+  --gemist-setting-text: #1a1a1a;
+  --gemist-setting-accent: #1f6feb;
+  --gemist-setting-radius: 16px;
+  --gemist-heading-size: 28px;
+  --gemist-title-size: 16px;
+  --gemist-body-size: 13px;
+  --gemist-price-size: 15px;
+  --gemist-image-size: 140px;
+  --gemist-card-max-width: 220px;
+  --gemist-card-padding: 12px;
+  --gemist-gap: 12px;
+  --gemist-cols: 3;
+  --gemist-detail-title-size: 28px;
+  --gemist-detail-body-size: 14px;
+  --gemist-detail-price-size: 20px;
+  --gemist-detail-image-size: 220px;
+  --gemist-detail-thumb-size: 48px;
+  --gemist-detail-gap: 1rem;
+  --gemist-detail-radius: 12px;
+  --gemist-preview-image: 180px;
+  --gemist-preview-thumb: 44px;
+  --gemist-preview-gap: 12px;
+  --gemist-preview-card-image: 120px;
+
+  box-sizing: border-box;
+  min-height: 0;
+  height: auto;
+  padding: 1rem;
+  color: var(--gemist-setting-text);
+  overflow: visible;
+  background: #fff;
+}
+
+.gemist-studio-kicker {
+  margin: 0 0 0.4rem;
+  color: var(--gemist-setting-accent);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.gemist-studio-heading {
+  margin: 0 0 0.85rem;
+  font-size: var(--gemist-heading-size, 1.35rem);
+  line-height: 1.2;
+}
+
+.gemist-studio-grid {
+  display: grid;
+  gap: var(--gemist-gap);
+}
+
+.gemist-studio-card {
+  overflow: hidden;
+  max-width: min(100%, var(--gemist-card-max-width, 220px));
+  background: var(--gemist-setting-bg);
+  border: 1px solid color-mix(in srgb, var(--gemist-setting-text) 12%, transparent);
+  border-radius: var(--gemist-setting-radius);
+}
+
+.gemist-studio-image {
+  width: 100%;
+  height: var(--gemist-preview-card-image);
+  background: linear-gradient(135deg, #d7dee8, #f3f5f8 55%, #c8b273);
+}
+
+.gemist-studio-card-body {
+  padding: var(--gemist-card-padding);
+}
+
+.gemist-studio-title {
+  display: block;
+  font-size: var(--gemist-title-size, 1rem);
+}
+
+.gemist-studio-body {
+  margin: 0.3rem 0 0;
+  color: color-mix(in srgb, var(--gemist-setting-text) 62%, transparent);
+  font-size: var(--gemist-body-size, 0.85rem);
+}
+
+.gemist-studio-price {
+  margin: 0.35rem 0 0;
+  color: var(--gemist-setting-accent);
+  font-size: var(--gemist-price-size, 1rem);
+  font-weight: 700;
+}
+
+.gemist-studio-preview--detail {
+  --gemist-lux-primary: var(--gemist-setting-text, #111111);
+  --gemist-lux-secondary: color-mix(
+    in srgb,
+    var(--gemist-setting-text, #111111) 62%,
+    transparent
+  );
+  --gemist-lux-muted: color-mix(
+    in srgb,
+    var(--gemist-setting-text, #111111) 45%,
+    transparent
+  );
+  --gemist-lux-border: color-mix(
+    in srgb,
+    var(--gemist-setting-text, #111111) 12%,
+    #e5e5e5
+  );
+  --gemist-lux-surface: color-mix(
+    in srgb,
+    var(--gemist-setting-bg, #ffffff) 94%,
+    var(--gemist-setting-text, #111111) 6%
+  );
+  --gemist-lux-bg: var(--gemist-setting-bg, #ffffff);
+  --gemist-lux-accent: var(--gemist-setting-accent, #111111);
+  background: var(--gemist-lux-bg);
+  color: var(--gemist-lux-primary);
+}
+
+.gemist-studio-detail-back {
+  margin: 0 0 0.85rem;
+  color: var(--gemist-lux-muted);
+  font-size: 0.72rem;
+  font-weight: 500;
+}
+
+.gemist-studio-preview--detail .gemist-studio-detail {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 1rem 0.85rem;
+  align-items: start;
+  width: 100%;
+}
+
+.gemist-studio-detail-media {
+  min-width: 0;
+}
+
+.gemist-studio-hero-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--gemist-preview-image);
+  padding: 0.75rem;
+  border-radius: var(--gemist-detail-radius, 14px);
+  background: var(--gemist-lux-surface);
+}
+
+.gemist-studio-hero {
+  width: 72%;
+  height: calc(var(--gemist-preview-image) * 0.72);
+  border-radius: 0;
+  background: linear-gradient(135deg, #d7dee8, #f3f5f8 55%, #c8b273);
+  transition: height 0.08s linear;
+}
+
+.gemist-studio-thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.45rem;
+}
+
+.gemist-studio-thumbs span {
+  width: var(--gemist-preview-thumb);
+  height: var(--gemist-preview-thumb);
+  border-radius: 6px;
+  border: 1px solid var(--gemist-lux-border);
+  background: #d7dee8;
+  flex: 0 0 auto;
+}
+
+.gemist-studio-thumbs span[data-active="true"] {
+  border-color: var(--gemist-lux-accent);
+  border-width: 1.5px;
+}
+
+.gemist-studio-detail-info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.gemist-studio-detail-eyebrow {
+  margin: 0 0 0.35rem;
+  color: var(--gemist-lux-muted);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.gemist-studio-detail-title {
+  margin: 0;
+  color: var(--gemist-lux-primary);
+  font-size: var(--gemist-detail-title-size);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.gemist-studio-detail-price {
+  margin: 0.35rem 0 0;
+  color: var(--gemist-lux-accent);
+  font-size: var(--gemist-detail-price-size);
+  font-weight: 500;
+}
+
+.gemist-studio-detail-body {
+  margin: 0.4rem 0 0;
+  color: var(--gemist-lux-secondary);
+  font-size: var(--gemist-detail-body-size);
+  line-height: 1.45;
+}
+
+.gemist-studio-detail-section-title {
+  margin: 0 0 0.35rem;
+  color: var(--gemist-lux-muted);
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.gemist-studio-detail-meta {
+  margin-top: 0.65rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--gemist-lux-border);
+}
+
+.gemist-studio-detail-meta dl {
+  margin: 0;
+}
+
+.gemist-studio-detail-meta dl div {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.35rem;
+  padding: 0.25rem 0;
+  border-bottom: 1px solid var(--gemist-lux-border);
+  font-size: 0.64rem;
+}
+
+.gemist-studio-detail-meta dt {
+  margin: 0;
+  color: var(--gemist-lux-muted);
+  font-weight: 400;
+}
+
+.gemist-studio-detail-meta dd {
+  margin: 0;
+  color: var(--gemist-lux-primary);
+  font-weight: 500;
+  text-align: right;
+}
+
+.gemist-studio-detail-actions {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 0.65rem;
+}
+
+.gemist-studio-detail-btn {
+  display: block;
+  min-height: 1.65rem;
+  border-radius: 0.35rem;
+  font-size: 0.64rem;
+  font-weight: 500;
+  line-height: 1.65rem;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gemist-studio-detail-btn--primary {
+  border: 1px solid var(--gemist-lux-accent);
+  color: #fff;
+  background: var(--gemist-lux-accent);
+}
+
+.gemist-studio-detail-btn--secondary {
+  border: 1px solid var(--gemist-lux-primary);
+  color: var(--gemist-lux-primary);
+  background: transparent;
+}
+
+.gemist-studio-detail-btn--link {
+  min-height: auto;
+  margin-top: 0.15rem;
+  border: 0;
+  color: var(--gemist-lux-secondary);
+  background: transparent;
+  line-height: 1.3;
+  text-align: left;
+}
+
+.gemist-studio-detail-specs {
+  margin-top: calc(var(--gemist-detail-specs-section-gap, 40px) * 0.35);
+  padding-top: calc(var(--gemist-detail-specs-section-gap, 40px) * 0.2);
+  border-top: 1px solid var(--gemist-lux-border);
+}
+
+.gemist-studio-detail-specs .gemist-studio-detail-section-title {
+  font-size: var(--gemist-detail-specs-heading-size, 0.58rem);
+}
+
+.gemist-studio-specs {
+  display: grid;
+  grid-template-columns: repeat(var(--gemist-detail-specs-columns, 2), minmax(0, 1fr));
+  gap: 0 calc(var(--gemist-detail-specs-column-gap, 32px) * 0.35);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gemist-studio-specs li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: calc(var(--gemist-detail-specs-row-gap, 12px) * 0.35) 0;
+  border-bottom: 1px solid var(--gemist-lux-border);
+}
+
+.gemist-studio-specs li span {
+  color: var(--gemist-lux-muted);
+  font-size: var(--gemist-detail-specs-label-size, 0.64rem);
+}
+
+.gemist-studio-specs li strong {
+  color: var(--gemist-lux-primary);
+  font-size: var(--gemist-detail-specs-value-size, 0.72rem);
+  font-weight: 500;
+}
+
+.gemist-studio-specs li:last-child {
+  border-bottom: 0;
+}
+
+@media (max-width: 1100px) {
+  .gemist-widget-library {
+    grid-template-columns: 1fr;
+  }
+
+  .gemist-widget-customize {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 749px) {
+  .gemist-widget-library {
+    grid-template-columns: 1fr;
+  }
+
+  .gemist-studio-preview--detail .gemist-studio-detail {
+    grid-template-columns: 1fr;
+  }
+
+  .gemist-studio-specs {
+    grid-template-columns: 1fr;
+  }
+}

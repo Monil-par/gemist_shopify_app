@@ -1,0 +1,501 @@
+{%- liquid
+  assign heading = block.settings.heading
+  assign limit = block.settings.limit
+  assign columns = block.settings.columns
+  assign api_base = block.settings.api_base_url | strip
+  assign block_id = 'gemist-products-' | append: block.id
+-%}
+
+{% render 'gemist-widget-vars' %}
+
+<style>
+  #{{ block_id }},
+  #{{ block_id }} [data-gemist-catalog] {
+    --gemist-cols: {{ columns }} !important;
+    --gemist-setting-bg: {{ block.settings.background }} !important;
+    --gemist-setting-text: {{ block.settings.text_color }} !important;
+    --gemist-setting-accent: {{ block.settings.accent_color }} !important;
+    --gemist-bg: {{ block.settings.background }} !important;
+    --gemist-text: {{ block.settings.text_color }} !important;
+    --gemist-accent: {{ block.settings.accent_color }} !important;
+    --gemist-setting-radius: {{ block.settings.corner_radius }}px !important;
+    --gemist-radius: {{ block.settings.corner_radius }}px !important;
+    --gemist-gap: {{ block.settings.grid_gap }}px !important;
+    --gemist-section-padding: {{ block.settings.section_padding }}px !important;
+    --gemist-heading-size: {{ block.settings.heading_size }}px !important;
+    --gemist-heading-weight: {{ block.settings.heading_weight }} !important;
+    --gemist-heading-color: {{ block.settings.heading_color }} !important;
+    --gemist-heading-align: {{ block.settings.heading_align }} !important;
+    --gemist-heading-margin: {{ block.settings.heading_margin }}px !important;
+    --gemist-title-size: {{ block.settings.title_size }}px !important;
+    --gemist-title-weight: {{ block.settings.title_weight }} !important;
+    --gemist-title-color: {{ block.settings.title_color }} !important;
+    --gemist-body-size: {{ block.settings.description_size }}px !important;
+    --gemist-body-weight: {{ block.settings.description_weight }} !important;
+    --gemist-body-color: {{ block.settings.description_color }} !important;
+    --gemist-price-size: {{ block.settings.price_size }}px !important;
+    --gemist-price-weight: {{ block.settings.price_weight }} !important;
+    --gemist-price-color: {{ block.settings.price_color }} !important;
+    {%- if block.settings.image_ratio == 'auto' -%}
+    --gemist-image-size: {{ block.settings.image_height }}px !important;
+    --gemist-image-ratio: auto !important;
+    {%- else -%}
+    --gemist-image-size: auto !important;
+    --gemist-image-ratio: {{ block.settings.image_ratio }} !important;
+    {%- endif -%}
+    --gemist-image-radius: {{ block.settings.image_radius }}px !important;
+    --gemist-image-fit: {{ block.settings.image_fit }} !important;
+    --gemist-card-max-width: {{ block.settings.card_max_width }}px !important;
+    --gemist-card-padding: {{ block.settings.card_padding }}px !important;
+    --gemist-card-border-width: {{ block.settings.card_border_width }}px !important;
+    --gemist-card-border-color: {{ block.settings.card_border_color }} !important;
+    --gemist-card-bg: {{ block.settings.card_background }} !important;
+  }
+</style>
+
+<section
+  id="{{ block_id }}"
+  class="gemist-products gemist-products--cols-{{ columns }}"
+  style="
+    --gemist-cols: {{ columns }};
+    --gemist-setting-bg: {{ block.settings.background }};
+    --gemist-setting-text: {{ block.settings.text_color }};
+    --gemist-setting-accent: {{ block.settings.accent_color }};
+    --gemist-setting-radius: {{ block.settings.corner_radius }}px;
+    --gemist-bg: {{ block.settings.background }};
+    --gemist-text: {{ block.settings.text_color }};
+    --gemist-accent: {{ block.settings.accent_color }};
+    --gemist-radius: {{ block.settings.corner_radius }}px;
+  "
+  data-gemist-products
+  data-app-src="{{ 'gemist-app.js' | asset_url }}"
+  data-api-base="{{ api_base | default: 'https://classique.dev.gemist.co' | escape }}"
+  data-limit="{{ limit }}"
+  data-show-heading="{{ block.settings.show_heading }}"
+  data-show-title="{{ block.settings.show_title }}"
+  data-show-description="{{ block.settings.show_description }}"
+  data-show-price="{{ block.settings.show_price }}"
+  data-show-actions="{{ block.settings.show_actions }}"
+  data-card-shadow="{{ block.settings.card_shadow }}"
+  data-empty-label="{{ 'gemist.products.empty' | t | escape }}"
+  data-error-label="{{ 'gemist.products.error' | t | escape }}"
+  data-retry-label="{{ 'gemist.products.retry' | t | escape }}"
+  data-rotate-label="{{ 'gemist.products.rotate' | t | escape }}"
+  data-back-label="{{ 'gemist.products.back' | t | escape }}"
+  data-back-product-label="{{ 'gemist.products.back_product' | t | escape }}"
+  data-prev-label="{{ 'gemist.products.prev' | t | escape }}"
+  data-next-label="{{ 'gemist.products.next' | t | escape }}"
+  data-page-label="{{ 'gemist.products.page' | t | escape }}"
+  data-add-label="{{ 'gemist.products.add_to_cart' | t | escape }}"
+  data-adding-label="{{ 'gemist.products.adding' | t | escape }}"
+  data-cart-error-label="{{ 'gemist.products.cart_error' | t | escape }}"
+  data-customize-label="{{ 'gemist.products.customize' | t | escape }}"
+  data-designer-label="{{ 'gemist.products.designer' | t | escape }}"
+  data-designer-title="{{ 'gemist.products.designer_title' | t | escape }}"
+  data-appointment-label="{{ 'gemist.products.appointment' | t | escape }}"
+  data-appointment-missing="{{ 'gemist.products.appointment_missing' | t | escape }}"
+  data-engraving-label="{{ 'gemist.products.engraving' | t | escape }}"
+  data-engraving-placeholder="{{ 'gemist.products.engraving_placeholder' | t | escape }}"
+  data-gemist-id-label="{{ 'gemist.products.gemist_id' | t | escape }}"
+  data-config-id-label="{{ 'gemist.products.config_id' | t | escape }}"
+  data-oem-sku-label="{{ 'gemist.products.oem_sku' | t | escape }}"
+  data-specs-label="{{ 'gemist.products.specs_heading' | t | escape }}"
+  data-meta-label="{{ 'gemist.products.meta_heading' | t | escape }}"
+>
+  <div data-gemist-catalog>
+    {%- if block.settings.show_heading and heading != blank -%}
+      <h2 class="gemist-products__heading">{{ heading | escape }}</h2>
+    {%- endif -%}
+
+    <p class="gemist-products__status" data-gemist-products-status>
+      {{ 'gemist.products.loading' | t }}
+    </p>
+    <ul class="gemist-products__grid" data-gemist-products-grid hidden></ul>
+    <nav class="gemist-products__pager" data-gemist-products-pager hidden aria-label="{{ 'gemist.products.pagination' | t | escape }}"></nav>
+  </div>
+
+  <article class="gemist-detail" data-gemist-detail hidden></article>
+  <article class="gemist-designer-page" data-gemist-designer-page hidden></article>
+</section>
+
+{% schema %}
+{
+  "name": "Product grid",
+  "target": "section",
+  "class": "gemist-products-block",
+  "stylesheet": "gemist-storefront.css",
+  "javascript": "gemist-products.js",
+  "enabled_on": {
+    "templates": ["index", "collection", "page", "product"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content & layout"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "All products"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_heading",
+      "label": "Show heading",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_title",
+      "label": "Show product title",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show product description",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_price",
+      "label": "Show price",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_actions",
+      "label": "Show card action links",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "api_base_url",
+      "label": "Gemist API URL (optional override)",
+      "default": "https://classique.dev.gemist.co",
+      "info": "Gemist catalog host only. Do not put your Shopify app URL here."
+    },
+    {
+      "type": "range",
+      "id": "limit",
+      "min": 4,
+      "max": 24,
+      "step": 2,
+      "label": "Products per page",
+      "default": 8
+    },
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "Columns",
+      "options": [
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ],
+      "default": "3"
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Section padding",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Grid gap",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "heading_margin",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading bottom spacing",
+      "default": 18
+    },
+
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 16,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 28
+    },
+    {
+      "type": "select",
+      "id": "heading_weight",
+      "label": "Heading weight",
+      "options": [
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "select",
+      "id": "heading_align",
+      "label": "Heading alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Title size",
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "title_weight",
+      "label": "Title weight",
+      "options": [
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "range",
+      "id": "description_size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Description size",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "description_weight",
+      "label": "Description weight",
+      "options": [
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Description color",
+      "default": "#6b6b6b"
+    },
+    {
+      "type": "range",
+      "id": "price_size",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Price size",
+      "default": 15
+    },
+    {
+      "type": "select",
+      "id": "price_weight",
+      "label": "Price weight",
+      "options": [
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "color",
+      "id": "price_color",
+      "label": "Price color",
+      "default": "#1f6feb"
+    },
+
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "range",
+      "id": "image_height",
+      "min": 120,
+      "max": 480,
+      "step": 8,
+      "unit": "px",
+      "label": "Image height",
+      "default": 224,
+      "info": "Used when aspect ratio is Auto"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image aspect ratio",
+      "options": [
+        { "value": "1 / 1", "label": "Square (1:1)" },
+        { "value": "4 / 5", "label": "Portrait (4:5)" },
+        { "value": "3 / 4", "label": "Portrait (3:4)" },
+        { "value": "4 / 3", "label": "Landscape (4:3)" },
+        { "value": "16 / 9", "label": "Wide (16:9)" },
+        { "value": "auto", "label": "Auto (use height)" }
+      ],
+      "default": "1 / 1"
+    },
+    {
+      "type": "select",
+      "id": "image_fit",
+      "label": "Image fit",
+      "options": [
+        { "value": "cover", "label": "Cover" },
+        { "value": "contain", "label": "Contain" },
+        { "value": "fill", "label": "Fill" }
+      ],
+      "default": "cover"
+    },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Image corner radius",
+      "default": 0
+    },
+
+    {
+      "type": "header",
+      "content": "Card"
+    },
+    {
+      "type": "range",
+      "id": "card_max_width",
+      "min": 160,
+      "max": 480,
+      "step": 8,
+      "unit": "px",
+      "label": "Card max width",
+      "default": 400
+    },
+    {
+      "type": "range",
+      "id": "card_padding",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Card padding",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "corner_radius",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Card corner radius",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "card_border_width",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "label": "Card border width",
+      "default": 1
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Card border color",
+      "default": "#e6e6e6"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "select",
+      "id": "card_shadow",
+      "label": "Card shadow",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "soft", "label": "Soft" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "strong", "label": "Strong" }
+      ],
+      "default": "none"
+    },
+
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Section background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Default text",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent",
+      "default": "#1f6feb"
+    }
+  ]
+}
+{% endschema %}

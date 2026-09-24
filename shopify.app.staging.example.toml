@@ -1,0 +1,48 @@
+# Staging / alternate deployment profile.
+# Copy to shopify.app.staging.toml locally if needed, then:
+#   shopify app config use staging
+#   shopify app deploy --config staging
+#
+# Keep client_id empty until you create a dedicated staging app in Partner Dashboard.
+
+client_id = "REPLACE_WITH_STAGING_CLIENT_ID"
+name = "Gemist Staging"
+application_url = "https://gemistapp.zooq.app"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+
+[webhooks]
+api_version = "2026-10"
+
+  [[webhooks.subscriptions]]
+  uri = "/webhooks/app/uninstalled"
+  topics = [ "app/uninstalled" ]
+
+  [[webhooks.subscriptions]]
+  uri = "/webhooks/app/scopes_update"
+  topics = [ "app/scopes_update" ]
+
+  [[webhooks.subscriptions]]
+  uri = "/webhooks/orders/create"
+  topics = [ "orders/create" ]
+
+  [[webhooks.subscriptions]]
+  compliance_topics = [ "customers/data_request", "customers/redact", "shop/redact" ]
+  uri = "/webhooks/compliance"
+
+[access_scopes]
+scopes = "write_products,read_products,write_inventory,read_inventory,read_locations,read_publications,write_publications,read_orders,write_app_proxy"
+
+[auth]
+redirect_urls = [
+  "https://gemistapp.zooq.app/auth/callback",
+  "https://gemistapp.zooq.app/auth/shopify/callback",
+  "https://gemistapp.zooq.app/api/auth/callback"
+]
+
+[app_proxy]
+url = "/api/proxy"
+subpath = "gemist"
+prefix = "apps"

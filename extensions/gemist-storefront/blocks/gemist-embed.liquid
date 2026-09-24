@@ -1,0 +1,21 @@
+{%- comment -%} Floating widget removed. Kept as a disabled app embed so existing themes do not break. {%- endcomment -%}
+
+{% schema %}
+{
+  "name": "Floating widget (retired)",
+  "target": "body",
+  "stylesheet": "gemist-storefront.css",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "This floating widget has been removed. Turn it off in Theme settings → App embeds if it is still listed."
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_widget",
+      "label": "Show floating data widget",
+      "default": false
+    }
+  ]
+}
+{% endschema %}

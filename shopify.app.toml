@@ -1,0 +1,118 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "19d443d2e5f546d9b66197584a1f3ca0"
+name = "Gemist"
+application_url = "https://gemistapp.zooq.app"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+
+[webhooks]
+api_version = "2026-10"
+
+  [[webhooks.subscriptions]]
+  uri = "/webhooks/app/uninstalled"
+  topics = [ "app/uninstalled" ]
+
+  [[webhooks.subscriptions]]
+  uri = "/webhooks/app/scopes_update"
+  topics = [ "app/scopes_update" ]
+
+  [[webhooks.subscriptions]]
+  uri = "/webhooks/orders/create"
+  topics = [ "orders/create" ]
+
+  [[webhooks.subscriptions]]
+  compliance_topics = [ "customers/data_request", "customers/redact", "shop/redact" ]
+  uri = "/webhooks/compliance"
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+# write_products / read_products: create cart products and variants for the merchant store
+# write_inventory / read_inventory / read_locations: keep Gemist variants always in stock
+# read_publications / write_publications: publish to Online Store so /cart/add.js works
+# read_orders: orders/create webhook so Gemist configuration can be stored after checkout
+scopes = "write_products,read_products,write_inventory,read_inventory,read_locations,read_publications,write_publications,read_orders,write_app_proxy"
+
+[auth]
+redirect_urls = [
+  "https://gemistapp.zooq.app/auth/callback",
+  "https://gemistapp.zooq.app/auth/shopify/callback",
+  "https://gemistapp.zooq.app/api/auth/callback"
+]
+
+[app_proxy]
+url = "/api/proxy"
+subpath = "gemist"
+prefix = "apps"
+
+[product.metafields.app.headline]
+name = "Storefront headline"
+description = "Headline shown in the Gemist theme block"
+type = "single_line_text_field"
+
+  [product.metafields.app.headline.access]
+  admin = "merchant_read_write"
+  storefront = "public_read"
+
+[product.metafields.app.summary]
+name = "Storefront summary"
+description = "Supporting copy shown in the Gemist theme block"
+type = "multi_line_text_field"
+
+  [product.metafields.app.summary.access]
+  admin = "merchant_read_write"
+  storefront = "public_read"
+
+[product.metafields.app.badge]
+name = "Storefront badge"
+description = "Small label above the headline"
+type = "single_line_text_field"
+
+  [product.metafields.app.badge.access]
+  admin = "merchant_read_write"
+  storefront = "public_read"
+
+[product.metafields.app.cta_label]
+name = "Storefront CTA label"
+type = "single_line_text_field"
+
+  [product.metafields.app.cta_label.access]
+  admin = "merchant_read_write"
+  storefront = "public_read"
+
+[product.metafields.app.cta_url]
+name = "Storefront CTA URL"
+type = "url"
+
+  [product.metafields.app.cta_url.access]
+  admin = "merchant_read_write"
+  storefront = "public_read"
+
+[product.metafields.app.storefront]
+name = "Storefront data"
+description = "Optional JSON: headline, summary, badge, items[{label,value}], cta_label, cta_url"
+type = "json"
+
+  [product.metafields.app.storefront.access]
+  admin = "merchant_read_write"
+  storefront = "public_read"
+
+[shop.metafields.app.gemist_widgets]
+name = "Gemist widget styles"
+description = "Admin-controlled font, card, and image sizes for Gemist theme widgets"
+type = "json"
+
+  [shop.metafields.app.gemist_widgets.access]
+  admin = "merchant_read_write"
+  storefront = "public_read"
+
+[shop.metafields.app.gemist_commerce]
+name = "Gemist commerce settings"
+description = "Markup and appointment settings for Gemist collection and PDP"
+type = "json"
+
+  [shop.metafields.app.gemist_commerce.access]
+  admin = "merchant_read_write"
+  storefront = "public_read"

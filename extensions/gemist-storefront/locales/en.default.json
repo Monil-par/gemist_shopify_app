@@ -1,0 +1,39 @@
+{
+  "gemist": {
+    "card": {
+      "default_badge": "Gemist"
+    },
+    "empty": {
+      "headline": "Gemist data will appear here",
+      "summary": "Add storefront fields on the product, or type a headline in this block’s settings."
+    },
+    "products": {
+      "loading": "Loading products…",
+      "empty": "No products found",
+      "error": "Could not load products",
+      "retry": "Try again",
+      "rotate": "Drag to rotate",
+      "back": "Back to products",
+      "back_product": "Back to product",
+      "prev": "Previous",
+      "next": "Next",
+      "page": "Page {current} of {total}",
+      "pagination": "Product pagination",
+      "add_to_cart": "Add to cart",
+      "adding": "Adding…",
+      "cart_error": "Could not add this item to the cart.",
+      "customize": "Customize your ring",
+      "designer": "Customize your ring",
+      "designer_title": "Designer",
+      "appointment": "Schedule an appointment",
+      "appointment_missing": "Set an appointment URL or email in the Gemist app settings.",
+      "engraving": "Engraving",
+      "engraving_placeholder": "Optional, up to 24 characters",
+      "gemist_id": "Gemist product ID",
+      "config_id": "Configuration ID",
+      "oem_sku": "OEM / Customer SKU",
+      "specs_heading": "Product details",
+      "meta_heading": "Product information"
+    }
+  }
+}

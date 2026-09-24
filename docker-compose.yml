@@ -1,0 +1,43 @@
+services:
+  app:
+    build: .
+    # Host 11027 -> container 3000 (Gemist_Shopiy_Anup)
+    ports:
+      - "11027:3000"
+    env_file:
+      - .env.production
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    # Host 11029 -> container 5432 (Gemist_postgres)
+    ports:
+      - "11029:5432"
+    environment:
+      POSTGRES_USER: gemist
+      POSTGRES_PASSWORD: gemist
+      POSTGRES_DB: gemist
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gemist"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    # Host 11028 -> container 6379 (Gemist_redis)
+    ports:
+      - "11028:6379"
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    restart: unless-stopped
+
+volumes:
+  pgdata:
