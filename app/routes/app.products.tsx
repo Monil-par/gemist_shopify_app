@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState, type MouseEvent } from "react";
 import type {
   ActionFunctionArgs,
   HeadersFunction,
@@ -221,14 +221,25 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     if (!slug || !isCatalogStyleStatus(status)) {
       return { ok: false, error: "Invalid product status update." } satisfies ActionData;
     }
-    await setCatalogStyleStatus({
-      shop: session.shop,
-      slug,
-      status,
-      title,
-      gemistProductId,
-    });
-    return { ok: true, intent: "set-status" } satisfies ActionData;
+    try {
+      await setCatalogStyleStatus({
+        shop: session.shop,
+        slug,
+        status,
+        title,
+        gemistProductId,
+      });
+      return { ok: true, intent: "set-status" } satisfies ActionData;
+    } catch (error) {
+      console.error("[gemist products] set-status failed", error);
+      return {
+        ok: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : "Could not update product visibility.",
+      } satisfies ActionData;
+    }
   }
 
   return { ok: false, error: "Unknown action." } satisfies ActionData;
@@ -375,13 +386,13 @@ export default function ProductsPage() {
           data.layout === "grid" ? (
             <div className="gemist-admin-grid">
               {data.products.map((product) => (
-                <ProductCard key={product.slug} product={product} fetcher={fetcher} />
+                <ProductCard key={product.slug} product={product} />
               ))}
             </div>
           ) : (
             <div className="gemist-admin-list">
               {data.products.map((product) => (
-                <ProductRow key={product.slug} product={product} fetcher={fetcher} />
+                <ProductRow key={product.slug} product={product} />
               ))}
             </div>
           )
@@ -479,43 +490,23 @@ function StatusBadge({ status }: { status: CatalogStyleStatus }) {
 
 function StatusActions({
   product,
-  fetcher,
 }: {
   product: ListProduct;
-  fetcher: ReturnType<typeof useFetcher<typeof action>>;
 }) {
-  const submitting =
-    fetcher.state !== "idle" &&
-    String(fetcher.formData?.get("slug") || "") === product.slug;
-
   return (
     <s-stack direction="inline" gap="small">
       {product.status !== "active" ? (
-        <StatusForm
-          fetcher={fetcher}
-          product={product}
-          status="active"
-          label="Activate"
-          loading={submitting}
-        />
+        <StatusForm product={product} status="active" label="Activate" />
       ) : null}
       {product.status !== "archived" ? (
-        <StatusForm
-          fetcher={fetcher}
-          product={product}
-          status="archived"
-          label="Archive"
-          loading={submitting}
-        />
+        <StatusForm product={product} status="archived" label="Archive" />
       ) : null}
       {product.status !== "deleted" ? (
         <StatusForm
-          fetcher={fetcher}
           product={product}
           status="deleted"
           label="Delete"
           tone="critical"
-          loading={submitting}
         />
       ) : null}
     </s-stack>
@@ -523,39 +514,79 @@ function StatusActions({
 }
 
 function StatusForm({
-  fetcher,
   product,
   status,
   label,
   tone,
   loading,
+  onDone,
 }: {
-  fetcher: ReturnType<typeof useFetcher<typeof action>>;
   product: ListProduct;
   status: CatalogStyleStatus;
   label: string;
   tone?: "critical";
   loading?: boolean;
+  onDone?: () => void;
 }) {
+  const shopify = useAppBridge();
+  const [pending, setPending] = useState(false);
+  const busy = loading || pending;
+
+  const submitStatus = async (event: MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (busy) return;
+    setPending(true);
+    try {
+      const token =
+        typeof shopify.idToken === "function" ? await shopify.idToken() : "";
+      const body = new URLSearchParams({
+        slug: product.slug,
+        status,
+        title: product.title,
+        gemistProductId: product.id,
+      });
+      const response = await fetch("/api/catalog-status", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body,
+      });
+      const payload = (await response.json().catch(() => null)) as
+        | { ok?: boolean; error?: string }
+        | null;
+      if (!response.ok || !payload?.ok) {
+        shopify.toast.show(payload?.error || "Could not update product visibility.");
+        return;
+      }
+      shopify.toast.show("Product visibility updated.");
+      onDone?.();
+      window.location.reload();
+    } catch (error) {
+      shopify.toast.show(
+        error instanceof Error
+          ? error.message
+          : "Could not update product visibility.",
+      );
+    } finally {
+      setPending(false);
+    }
+  };
+
   return (
-    <fetcher.Form
-      method="post"
-      onClick={(event) => event.stopPropagation()}
-    >
-      <input type="hidden" name="intent" value="set-status" />
-      <input type="hidden" name="slug" value={product.slug} />
-      <input type="hidden" name="status" value={status} />
-      <input type="hidden" name="title" value={product.title} />
-      <input type="hidden" name="gemistProductId" value={product.id} />
+    <span onClick={(event) => event.stopPropagation()}>
       <s-button
-        type="submit"
+        type="button"
         variant="tertiary"
         {...(tone ? { tone } : {})}
-        {...(loading ? { loading: true } : {})}
+        {...(busy ? { loading: true } : {})}
+        onClick={submitStatus}
       >
         {label}
       </s-button>
-    </fetcher.Form>
+    </span>
   );
 }
 
@@ -569,10 +600,8 @@ function productHref(slug: string) {
  */
 function ProductCard({
   product,
-  fetcher,
 }: {
   product: ListProduct;
-  fetcher: ReturnType<typeof useFetcher<typeof action>>;
 }) {
   const href = productHref(product.slug);
   return (
@@ -599,7 +628,7 @@ function ProductCard({
         {product.price ? (
           <p className="gemist-admin-card__price">{product.price}</p>
         ) : null}
-        <StatusActions product={product} fetcher={fetcher} />
+        <StatusActions product={product} />
       </div>
     </div>
   );
@@ -607,10 +636,8 @@ function ProductCard({
 
 function ProductRow({
   product,
-  fetcher,
 }: {
   product: ListProduct;
-  fetcher: ReturnType<typeof useFetcher<typeof action>>;
 }) {
   const href = productHref(product.slug);
   return (
@@ -638,7 +665,7 @@ function ProductRow({
           <p className="gemist-admin-card__price">{product.price}</p>
         ) : null}
       </div>
-      <StatusActions product={product} fetcher={fetcher} />
+      <StatusActions product={product} />
     </div>
   );
 }

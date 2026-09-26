@@ -1,11 +1,11 @@
-import { useEffect } from "react";
+import { useState } from "react";
 import type {
   ActionFunctionArgs,
   HeadersFunction,
   LinksFunction,
   LoaderFunctionArgs,
 } from "react-router";
-import { Link, useFetcher, useLoaderData } from "react-router";
+import { Link, useLoaderData } from "react-router";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 import { boundary } from "@shopify/shopify-app-react-router/server";
@@ -16,6 +16,7 @@ import {
   getCatalogStyleStatus,
   isCatalogStyleStatus,
   setCatalogStyleStatus,
+  type CatalogStyleStatus,
 } from "../models/merchant-catalog.server";
 import {
   getGemistStyleProduct,
@@ -146,36 +147,71 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     return { ok: false, error: "Invalid status." } satisfies ActionData;
   }
 
-  await setCatalogStyleStatus({
-    shop: session.shop,
-    slug,
-    status,
-    title,
-    gemistProductId,
-  });
-
-  return { ok: true } satisfies ActionData;
+  try {
+    await setCatalogStyleStatus({
+      shop: session.shop,
+      slug,
+      status,
+      title,
+      gemistProductId,
+    });
+    return { ok: true } satisfies ActionData;
+  } catch (error) {
+    console.error("[gemist product detail] set-status failed", error);
+    return {
+      ok: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Could not update product visibility.",
+    } satisfies ActionData;
+  }
 };
 
 export default function ProductDetailPage() {
   const data = useLoaderData<typeof loader>();
-  const fetcher = useFetcher<typeof action>();
   const shopify = useAppBridge();
-  const busy = fetcher.state !== "idle";
-
-  useEffect(() => {
-    if (!fetcher.data) return;
-    if ("ok" in fetcher.data && fetcher.data.ok) {
-      shopify.toast.show("Product visibility updated.");
-      window.location.reload();
-      return;
-    }
-    if ("ok" in fetcher.data && !fetcher.data.ok) {
-      shopify.toast.show(fetcher.data.error || "Update failed");
-    }
-  }, [fetcher.data, shopify]);
+  const [busyStatus, setBusyStatus] = useState<string>("");
 
   const { product, status } = data;
+
+  const updateStatus = async (nextStatus: CatalogStyleStatus) => {
+    if (busyStatus) return;
+    setBusyStatus(nextStatus);
+    try {
+      const token =
+        typeof shopify.idToken === "function" ? await shopify.idToken() : "";
+      const body = new URLSearchParams({
+        slug: product.slug,
+        status: nextStatus,
+        title: product.title,
+        gemistProductId: product.id,
+      });
+      const response = await fetch("/api/catalog-status", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body,
+      });
+      const payload = (await response.json().catch(() => null)) as
+        | { ok?: boolean; error?: string }
+        | null;
+      if (!response.ok || !payload?.ok) {
+        shopify.toast.show(payload?.error || "Update failed");
+        return;
+      }
+      shopify.toast.show("Product visibility updated.");
+      window.location.reload();
+    } catch (error) {
+      shopify.toast.show(
+        error instanceof Error ? error.message : "Update failed",
+      );
+    } finally {
+      setBusyStatus("");
+    }
+  };
 
   return (
     <s-page heading={product.title}>
@@ -211,23 +247,16 @@ export default function ProductDetailPage() {
           )
             .filter(([value]) => value !== status)
             .map(([value, label, tone]) => (
-              <fetcher.Form method="post" key={value}>
-                <input type="hidden" name="status" value={value} />
-                <input type="hidden" name="title" value={product.title} />
-                <input
-                  type="hidden"
-                  name="gemistProductId"
-                  value={product.id}
-                />
-                <s-button
-                  type="submit"
-                  variant={value === "active" ? "primary" : "secondary"}
-                  {...(tone ? { tone } : {})}
-                  {...(busy ? { loading: true } : {})}
-                >
-                  {label}
-                </s-button>
-              </fetcher.Form>
+              <s-button
+                key={value}
+                type="button"
+                variant={value === "active" ? "primary" : "secondary"}
+                {...(tone ? { tone } : {})}
+                {...(busyStatus === value ? { loading: true } : {})}
+                onClick={() => updateStatus(value)}
+              >
+                {label}
+              </s-button>
             ))}
         </s-stack>
       </s-section>
