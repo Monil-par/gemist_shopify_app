@@ -1,0 +1,47 @@
+{%- comment -%}
+  Loads Gemist brand fonts for the product grid / detail / designer UI.
+{%- endcomment -%}
+<style id="gemist-fonts">
+  @font-face {
+    font-family: "Canela Text Trial";
+    src: url("{{ 'fonts/CanelaText-Thin-Trial.otf' | asset_url }}") format("opentype");
+    font-weight: 100;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "Canela Text Trial";
+    src: url("{{ 'fonts/CanelaText-ThinItalic-Trial.otf' | asset_url }}") format("opentype");
+    font-weight: 100;
+    font-style: italic;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "Helvetica Neue Ultra Light";
+    src: url("{{ 'fonts/HelveticaNeueUltraLight.otf' | asset_url }}") format("opentype");
+    font-weight: 100;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "Helvetica Neue Ultra Light";
+    src: url("{{ 'fonts/HelveticaNeueUltraLightItalic.otf' | asset_url }}") format("opentype");
+    font-weight: 100;
+    font-style: italic;
+    font-display: swap;
+  }
+
+  .gemist-products,
+  .gemist-detail,
+  .gemist-designer-page,
+  [data-gemist-catalog],
+  [data-gemist-detail],
+  [data-gemist-designer-page] {
+    --gemist-font-heading: "Canela Text Trial", "Iowan Old Style", Palatino, Georgia, serif;
+    --gemist-font-body: "Helvetica Neue Ultra Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --gemist-lux-serif: var(--gemist-font-heading);
+  }
+</style>

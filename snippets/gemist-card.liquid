@@ -1,0 +1,110 @@
+{%- comment -%}
+  Renders the Gemist storefront card from product metafields and block settings.
+  Accepts: product, block
+{%- endcomment -%}
+
+{%- liquid
+  assign selected_product = product
+  if selected_product == blank
+    assign selected_product = block.settings.product
+  endif
+
+  assign data = selected_product.metafields.app.storefront.value
+  assign headline = block.settings.headline
+  assign summary = block.settings.summary
+  assign badge = selected_product.metafields.app.badge.value
+  assign cta_label = selected_product.metafields.app.cta_label.value
+  assign cta_url = selected_product.metafields.app.cta_url.value
+  assign items = nil
+
+  if headline == blank and data.headline != blank
+    assign headline = data.headline
+  endif
+  if headline == blank
+    assign headline = selected_product.metafields.app.headline.value
+  endif
+
+  if summary == blank and data.summary != blank
+    assign summary = data.summary
+  endif
+  if summary == blank
+    assign summary = selected_product.metafields.app.summary.value
+  endif
+
+  if badge == blank and data.badge != blank
+    assign badge = data.badge
+  endif
+
+  if data.items != blank
+    assign items = data.items
+  endif
+
+  if cta_label == blank and data.cta_label != blank
+    assign cta_label = data.cta_label
+  endif
+  if cta_url == blank and data.cta_url != blank
+    assign cta_url = data.cta_url
+  endif
+
+  assign has_content = false
+  if headline != blank or summary != blank or badge != blank or items != blank
+    assign has_content = true
+  endif
+-%}
+
+{%- capture card_style -%}
+  --gemist-setting-bg: {{ block.settings.background }};
+  --gemist-setting-text: {{ block.settings.text_color }};
+  --gemist-setting-accent: {{ block.settings.accent_color }};
+  --gemist-setting-radius: {{ block.settings.corner_radius }}px;
+{%- endcapture -%}
+
+{%- if has_content -%}
+  <article
+    class="gemist-card gemist-card--{{ block.settings.layout }}"
+    style="{{ card_style | strip_newlines | strip }}"
+    data-gemist-card
+  >
+    {%- if block.settings.show_badge and badge != blank -%}
+      <p class="gemist-card__eyebrow">{{ badge | escape }}</p>
+    {%- elsif block.settings.show_badge -%}
+      <p class="gemist-card__eyebrow">{{ 'gemist.card.default_badge' | t }}</p>
+    {%- endif -%}
+
+    {%- if headline != blank -%}
+      <h3 class="gemist-card__headline">{{ headline | escape }}</h3>
+    {%- endif -%}
+
+    {%- if summary != blank -%}
+      <p class="gemist-card__summary">{{ summary | escape | newline_to_br }}</p>
+    {%- endif -%}
+
+    {%- if items != blank -%}
+      <ul class="gemist-card__stats">
+        {%- for item in items -%}
+          <li class="gemist-card__stat">
+            {%- if item.label != blank -%}
+              <span class="gemist-card__stat-label">{{ item.label | escape }}</span>
+            {%- endif -%}
+            {%- if item.value != blank -%}
+              <span class="gemist-card__stat-value">{{ item.value | escape }}</span>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+    {%- if cta_label != blank and cta_url != blank -%}
+      <a class="gemist-card__cta" href="{{ cta_url }}">{{ cta_label | escape }}</a>
+    {%- endif -%}
+  </article>
+{%- elsif request.design_mode or block.settings.show_empty_state -%}
+  <article
+    class="gemist-card gemist-card--empty"
+    style="{{ card_style | strip_newlines | strip }}"
+  >
+    <p class="gemist-card__eyebrow">{{ 'gemist.card.default_badge' | t }}</p>
+    <h3 class="gemist-card__headline">{{ 'gemist.empty.headline' | t }}</h3>
+    <p class="gemist-card__summary">{{ 'gemist.empty.summary' | t }}</p>
+  </article>
+{%- endif -%}

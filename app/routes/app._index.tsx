@@ -12,11 +12,16 @@ import { ShopBanner } from "../components/shop-banner";
 import { getMerchantCredentials } from "../models/merchant-credential.server";
 import { getMerchantSettings } from "../models/merchant-settings.server";
 import {
+  countOrdersNeedingToken,
   listRecentGemistOrders,
   retryGemistOrder,
+  retryPendingGemistOrders,
 } from "../models/gemist-order.server";
 import { pingGemistApi, resolveGemistApiBaseUrl } from "../lib/gemist-api.server";
 import { getShopProfile } from "../lib/shop-profile.server";
+import { getAccessView, syncSubscription } from "../lib/access.server";
+import { isMonetizationEnabled } from "../lib/features.server";
+import { reportSubscriptionToAdmin } from "../lib/store-report.server";
 
 type ActionData =
   | { ok: true; status: string; gemistOrderId?: string }
@@ -27,7 +32,22 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const profile = await getShopProfile(admin, session.shop);
   const credentials = await getMerchantCredentials(session.shop);
   const settings = await getMerchantSettings(session.shop);
-  const orders = await listRecentGemistOrders(session.shop);
+  // Lightweight auto-retry when merchant opens Home (max attempts enforced inside).
+  if (credentials?.merchantSecret) {
+    retryPendingGemistOrders(session.shop, { limit: 3 }).catch((error) => {
+      console.warn("[gemist order] home auto-retry failed", error);
+    });
+  }
+  const [orders, ordersNeedingToken] = await Promise.all([
+    listRecentGemistOrders(session.shop),
+    countOrdersNeedingToken(session.shop),
+  ]);
+  const monetization = isMonetizationEnabled();
+  if (monetization) {
+    await syncSubscription(session.shop, admin.graphql);
+    reportSubscriptionToAdmin(session.shop, admin).catch(() => {});
+  }
+  const access = await getAccessView(session.shop);
   const apiBaseUrl = resolveGemistApiBaseUrl(settings.apiBaseUrl);
   let catalogOk = false;
   let styleCount = 0;
@@ -41,10 +61,13 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   return {
     profile,
+    access,
+    showMonetization: monetization,
     apiBaseUrl,
     catalogOk,
     styleCount,
-    hasCredentials: Boolean(credentials),
+    hasCredentials: Boolean(credentials?.merchantSecret),
+    ordersNeedingToken,
     markupPercent: settings.markupPercent,
     hasAppointment: Boolean(
       settings.appointmentUrl || settings.appointmentEmail,
@@ -110,6 +133,36 @@ export default function Index() {
     <s-page heading="Home">
       <ShopBanner shopName={data.profile.name} shopDomain={data.profile.domain} />
 
+      {data.showMonetization ? (
+        data.access.active ? (
+          data.access.enforced ? (
+            <s-banner heading="Gemist is live on your storefront" tone="success">
+              Changes you save here and in the theme editor show on your store.{" "}
+              <s-link href="/app/billing">Manage plan</s-link>
+            </s-banner>
+          ) : null
+        ) : (
+          <s-banner heading="A paid subscription is required to go live" tone="warning">
+            Set up and preview the grid now. It stays hidden from shoppers until
+            you subscribe, then your saved setup goes live automatically.{" "}
+            <s-link href="/app/billing">View plans</s-link>
+          </s-banner>
+        )
+      ) : null}
+
+      {!data.hasCredentials ? (
+        <s-banner heading="Order token required for Gemist manufacturing handoff" tone="warning">
+          Save a Merchant secret in Settings so orders can be submitted to Gemist.
+          Until then, Gemist lines are stored here for retry.{" "}
+          <s-link href="/app/settings">Open Settings</s-link>
+        </s-banner>
+      ) : data.ordersNeedingToken > 0 ? (
+        <s-banner heading="Orders waiting on Gemist handoff" tone="warning">
+          {data.ordersNeedingToken} order(s) previously failed without a valid
+          token. Retry from the list below once credentials are confirmed.
+        </s-banner>
+      ) : null}
+
       <s-section heading="Connection">
         <s-unordered-list>
           <s-list-item>
@@ -121,9 +174,6 @@ export default function Index() {
           <s-list-item>API: {data.apiBaseUrl}</s-list-item>
           <s-list-item>Markup: {data.markupPercent}%</s-list-item>
           <s-list-item>
-            Appointments: {data.hasAppointment ? "configured" : "not set"}
-          </s-list-item>
-          <s-list-item>
             Order token: {data.hasCredentials ? "saved" : "not saved"}
           </s-list-item>
         </s-unordered-list>
@@ -131,6 +181,7 @@ export default function Index() {
           <s-button href="/app/settings" variant="primary">
             Settings
           </s-button>
+          <s-button href="/app/pricing">Pricing</s-button>
           <s-button href="/app/theme">Theme</s-button>
           <s-button href="/app/widgets">Widgets</s-button>
           <s-button href={data.profile.storefrontUrl} target="_blank" variant="tertiary">
@@ -142,12 +193,14 @@ export default function Index() {
       <s-section heading="Get started">
         <s-unordered-list>
           <s-list-item>
-            Save catalog URL, markup, and appointment settings
+            Save catalog URL and pricing rules in Settings / Pricing
           </s-list-item>
           <s-list-item>
             Add the product grid to a collection or home page
           </s-list-item>
           <s-list-item>Customize widget styles for this store</s-list-item>
+          <s-list-item>Preview the grid in the theme editor</s-list-item>
+          <s-list-item>Configure a product and add it to cart from the storefront</s-list-item>
         </s-unordered-list>
       </s-section>
 

@@ -3,6 +3,7 @@ import {
   DEFAULT_GEMIST_API_BASE_URL,
   normalizeGemistApiBaseUrl,
 } from "../lib/gemist-api.server";
+import { isAppointmentsEnabled } from "../lib/features.server";
 
 export type MerchantSettings = {
   shop: string;
@@ -68,6 +69,7 @@ export async function publishCommerceMetafield(
   admin: Admin,
   settings: MerchantSettings,
 ) {
+  const appointments = isAppointmentsEnabled();
   const shopResponse = await admin.graphql(`#graphql
     query GemistCommerceShop {
       shop { id }
@@ -96,9 +98,10 @@ export async function publishCommerceMetafield(
             value: JSON.stringify({
               apiBaseUrl: settings.apiBaseUrl,
               markupPercent: settings.markupPercent,
-              appointmentUrl: settings.appointmentUrl,
-              appointmentEmail: settings.appointmentEmail,
-              appointmentLabel: settings.appointmentLabel,
+              appointmentsEnabled: appointments,
+              appointmentUrl: appointments ? settings.appointmentUrl : "",
+              appointmentEmail: appointments ? settings.appointmentEmail : "",
+              appointmentLabel: appointments ? settings.appointmentLabel : "",
             }),
           },
         ],

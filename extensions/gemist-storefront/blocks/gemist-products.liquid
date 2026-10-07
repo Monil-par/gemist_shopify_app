@@ -7,49 +7,140 @@
 -%}
 
 {% render 'gemist-widget-vars' %}
+{% render 'gemist-fonts' %}
 
 <style>
+  html {
+    --gemist-list-bg: {{ block.settings.background }};
+    --gemist-detail-bg: {{ block.settings.detail_background }};
+    --gemist-designer-bg: {{ block.settings.designer_background }};
+  }
+
   #{{ block_id }},
-  #{{ block_id }} [data-gemist-catalog] {
+  #{{ block_id }} [data-gemist-catalog],
+  #{{ block_id }} [data-gemist-detail],
+  #{{ block_id }} [data-gemist-designer-page] {
     --gemist-cols: {{ columns }} !important;
+    --gemist-list-bg: {{ block.settings.background }} !important;
+    --gemist-detail-bg: {{ block.settings.detail_background }} !important;
+    --gemist-designer-bg: {{ block.settings.designer_background }} !important;
     --gemist-setting-bg: {{ block.settings.background }} !important;
     --gemist-setting-text: {{ block.settings.text_color }} !important;
     --gemist-setting-accent: {{ block.settings.accent_color }} !important;
     --gemist-bg: {{ block.settings.background }} !important;
     --gemist-text: {{ block.settings.text_color }} !important;
     --gemist-accent: {{ block.settings.accent_color }} !important;
-    --gemist-setting-radius: {{ block.settings.corner_radius }}px !important;
-    --gemist-radius: {{ block.settings.corner_radius }}px !important;
+    --gemist-setting-radius: 0 !important;
+    --gemist-radius: 0 !important;
     --gemist-gap: {{ block.settings.grid_gap }}px !important;
     --gemist-section-padding: {{ block.settings.section_padding }}px !important;
     --gemist-heading-size: {{ block.settings.heading_size }}px !important;
-    --gemist-heading-weight: {{ block.settings.heading_weight }} !important;
     --gemist-heading-color: {{ block.settings.heading_color }} !important;
-    --gemist-heading-align: {{ block.settings.heading_align }} !important;
-    --gemist-heading-margin: {{ block.settings.heading_margin }}px !important;
+    --gemist-heading-margin: 0.65rem !important;
     --gemist-title-size: {{ block.settings.title_size }}px !important;
-    --gemist-title-weight: {{ block.settings.title_weight }} !important;
     --gemist-title-color: {{ block.settings.title_color }} !important;
     --gemist-body-size: {{ block.settings.description_size }}px !important;
-    --gemist-body-weight: {{ block.settings.description_weight }} !important;
     --gemist-body-color: {{ block.settings.description_color }} !important;
     --gemist-price-size: {{ block.settings.price_size }}px !important;
-    --gemist-price-weight: {{ block.settings.price_weight }} !important;
     --gemist-price-color: {{ block.settings.price_color }} !important;
     {%- if block.settings.image_ratio == 'auto' -%}
-    --gemist-image-size: {{ block.settings.image_height }}px !important;
+    --gemist-image-size: 224px !important;
     --gemist-image-ratio: auto !important;
     {%- else -%}
     --gemist-image-size: auto !important;
     --gemist-image-ratio: {{ block.settings.image_ratio }} !important;
     {%- endif -%}
-    --gemist-image-radius: {{ block.settings.image_radius }}px !important;
+    --gemist-image-radius: 0 !important;
     --gemist-image-fit: {{ block.settings.image_fit }} !important;
-    --gemist-card-max-width: {{ block.settings.card_max_width }}px !important;
-    --gemist-card-padding: {{ block.settings.card_padding }}px !important;
-    --gemist-card-border-width: {{ block.settings.card_border_width }}px !important;
-    --gemist-card-border-color: {{ block.settings.card_border_color }} !important;
-    --gemist-card-bg: {{ block.settings.card_background }} !important;
+    --gemist-pager-font-size: {{ block.settings.pager_font_size }}px !important;
+    --gemist-pager-btn-size: {{ block.settings.pager_btn_size }}px !important;
+    --gemist-pager-active: {{ block.settings.pager_active_color }} !important;
+    --gemist-pager-inactive: {{ block.settings.pager_inactive_color }} !important;
+    --gemist-pager-prev-bg: {{ block.settings.pager_prev_bg }} !important;
+    --gemist-pager-next-bg: {{ block.settings.pager_next_bg }} !important;
+    --gemist-pager-icon: #ffffff !important;
+    --gemist-pager-align: {{ block.settings.pager_align }} !important;
+    --gemist-action-font-size: {{ block.settings.action_font_size }}px !important;
+    --gemist-view-btn-bg: {{ block.settings.view_btn_bg }} !important;
+    --gemist-view-btn-text: {{ block.settings.view_btn_text }} !important;
+    --gemist-customize-btn-bg: {{ block.settings.customize_btn_bg }} !important;
+    --gemist-customize-btn-text: {{ block.settings.customize_btn_text }} !important;
+  }
+
+  #{{ block_id }} [data-gemist-catalog] {
+    --gemist-lux-bg: {{ block.settings.background }} !important;
+    background: {{ block.settings.background }} !important;
+  }
+
+  #{{ block_id }} [data-gemist-detail] {
+    --gemist-lux-bg: {{ block.settings.detail_background }} !important;
+    background: {{ block.settings.detail_background }} !important;
+  }
+
+  #{{ block_id }} [data-gemist-designer-page] {
+    --gemist-lux-bg: {{ block.settings.designer_background }} !important;
+    background: {{ block.settings.designer_background }} !important;
+  }
+
+  .gemist-products-block,
+  #{{ block_id }} {
+    background: var(--gemist-list-bg, {{ block.settings.background }}) !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 100vh !important;
+  }
+
+  html.gemist-catalog-open,
+  body.gemist-catalog-open {
+    background: var(--gemist-list-bg, {{ block.settings.background }}) !important;
+  }
+
+  html.gemist-detail-open,
+  body.gemist-detail-open {
+    background: var(--gemist-detail-bg, {{ block.settings.detail_background }}) !important;
+  }
+
+  html.gemist-detail-open #{{ block_id }},
+  html.gemist-detail-open .gemist-products-block,
+  html.gemist-detail-open #{{ block_id }} [data-gemist-detail] {
+    background: var(--gemist-detail-bg, {{ block.settings.detail_background }}) !important;
+  }
+
+  html.gemist-designer-open,
+  body.gemist-designer-open {
+    background: var(--gemist-designer-bg, {{ block.settings.designer_background }}) !important;
+  }
+
+  html.gemist-designer-open #{{ block_id }},
+  html.gemist-designer-open .gemist-products-block,
+  html.gemist-designer-open #{{ block_id }} [data-gemist-designer-page] {
+    background: var(--gemist-designer-bg, {{ block.settings.designer_background }}) !important;
+  }
+
+  html.gemist-catalog-open #{{ block_id }},
+  html.gemist-catalog-open .gemist-products-block,
+  html.gemist-catalog-open #{{ block_id }} [data-gemist-catalog] {
+    background: var(--gemist-list-bg, {{ block.settings.background }}) !important;
+  }
+
+  @media (max-width: 749px) {
+    #{{ block_id }},
+    .gemist-products-block,
+    .shopify-section:has(#{{ block_id }}) {
+      --gemist-section-padding: 0 !important;
+      padding: 0 !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
+
+    #{{ block_id }} [data-gemist-catalog],
+    #{{ block_id }} [data-gemist-detail],
+    #{{ block_id }} [data-gemist-designer-page] {
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
   }
 </style>
 
@@ -61,11 +152,11 @@
     --gemist-setting-bg: {{ block.settings.background }};
     --gemist-setting-text: {{ block.settings.text_color }};
     --gemist-setting-accent: {{ block.settings.accent_color }};
-    --gemist-setting-radius: {{ block.settings.corner_radius }}px;
+    --gemist-setting-radius: 0px;
     --gemist-bg: {{ block.settings.background }};
     --gemist-text: {{ block.settings.text_color }};
     --gemist-accent: {{ block.settings.accent_color }};
-    --gemist-radius: {{ block.settings.corner_radius }}px;
+    --gemist-radius: 0px;
   "
   data-gemist-products
   data-app-src="{{ 'gemist-app.js' | asset_url }}"
@@ -73,10 +164,12 @@
   data-limit="{{ limit }}"
   data-show-heading="{{ block.settings.show_heading }}"
   data-show-title="{{ block.settings.show_title }}"
-  data-show-description="{{ block.settings.show_description }}"
+  data-show-description="true"
   data-show-price="{{ block.settings.show_price }}"
   data-show-actions="{{ block.settings.show_actions }}"
-  data-card-shadow="{{ block.settings.card_shadow }}"
+  data-view-label="{{ block.settings.view_btn_label | escape }}"
+  data-card-customize-label="{{ block.settings.customize_btn_label | escape }}"
+  data-show-filters="true"
   data-empty-label="{{ 'gemist.products.empty' | t | escape }}"
   data-error-label="{{ 'gemist.products.error' | t | escape }}"
   data-retry-label="{{ 'gemist.products.retry' | t | escape }}"
@@ -92,10 +185,24 @@
   data-customize-label="{{ 'gemist.products.customize' | t | escape }}"
   data-designer-label="{{ 'gemist.products.designer' | t | escape }}"
   data-designer-title="{{ 'gemist.products.designer_title' | t | escape }}"
+  data-designer-path="{{ block.settings.designer_path | default: 'designer/bands' | escape }}"
+  data-designer-default-shape="Asscher"
   data-appointment-label="{{ 'gemist.products.appointment' | t | escape }}"
   data-appointment-missing="{{ 'gemist.products.appointment_missing' | t | escape }}"
   data-engraving-label="{{ 'gemist.products.engraving' | t | escape }}"
   data-engraving-placeholder="{{ 'gemist.products.engraving_placeholder' | t | escape }}"
+  data-engraving-none-label="{{ 'gemist.products.engraving_none' | t | escape }}"
+  data-engraving-add-label="{{ 'gemist.products.engraving_add' | t | escape }}"
+  data-engraving-text-label="{{ 'gemist.products.engraving_text' | t | escape }}"
+  data-engraving-required="{{ 'gemist.products.engraving_required' | t | escape }}"
+  data-engraving-invalid="{{ 'gemist.products.engraving_invalid' | t | escape }}"
+  data-engraving-price-note="{{ 'gemist.products.engraving_price_note' | t | escape }}"
+  data-engraving-font-label="{{ 'gemist.products.engraving_font' | t | escape }}"
+  data-engraving-preview-label="{{ 'gemist.products.engraving_preview' | t | escape }}"
+  data-engraving-preview-note="{{ 'gemist.products.engraving_preview_note' | t | escape }}"
+  data-engraving-max-chars="20"
+  data-engraving-fonts="Classic|Serif|Script|Modern"
+  data-engraving-fee="50"
   data-gemist-id-label="{{ 'gemist.products.gemist_id' | t | escape }}"
   data-config-id-label="{{ 'gemist.products.config_id' | t | escape }}"
   data-oem-sku-label="{{ 'gemist.products.oem_sku' | t | escape }}"
@@ -107,11 +214,16 @@
       <h2 class="gemist-products__heading">{{ heading | escape }}</h2>
     {%- endif -%}
 
-    <p class="gemist-products__status" data-gemist-products-status>
-      {{ 'gemist.products.loading' | t }}
-    </p>
-    <ul class="gemist-products__grid" data-gemist-products-grid hidden></ul>
-    <nav class="gemist-products__pager" data-gemist-products-pager hidden aria-label="{{ 'gemist.products.pagination' | t | escape }}"></nav>
+    <div class="gemist-catalog__layout">
+      <aside class="gemist-catalog__filters" data-gemist-filters aria-label="Product filters"></aside>
+      <div class="gemist-catalog__main">
+        <p class="gemist-products__status" data-gemist-products-status>
+          {{ 'gemist.products.loading' | t }}
+        </p>
+        <ul class="gemist-products__grid" data-gemist-products-grid hidden></ul>
+        <nav class="gemist-products__pager" data-gemist-products-pager hidden aria-label="{{ 'gemist.products.pagination' | t | escape }}"></nav>
+      </div>
+    </div>
   </div>
 
   <article class="gemist-detail" data-gemist-detail hidden></article>
@@ -153,12 +265,6 @@
     },
     {
       "type": "checkbox",
-      "id": "show_description",
-      "label": "Show product description",
-      "default": true
-    },
-    {
-      "type": "checkbox",
       "id": "show_price",
       "label": "Show price",
       "default": true
@@ -166,8 +272,20 @@
     {
       "type": "checkbox",
       "id": "show_actions",
-      "label": "Show card action links",
+      "label": "Show View / Customize buttons",
       "default": true
+    },
+    {
+      "type": "text",
+      "id": "view_btn_label",
+      "label": "View product button label",
+      "default": "View product"
+    },
+    {
+      "type": "text",
+      "id": "customize_btn_label",
+      "label": "Customize button label",
+      "default": "Customize"
     },
     {
       "type": "text",
@@ -177,11 +295,18 @@
       "info": "Gemist catalog host only. Do not put your Shopify app URL here."
     },
     {
+      "type": "text",
+      "id": "designer_path",
+      "label": "Designer path",
+      "default": "designer/bands",
+      "info": "Appended to the Gemist API URL for the customize iframe."
+    },
+    {
       "type": "range",
       "id": "limit",
-      "min": 4,
-      "max": 24,
-      "step": 2,
+      "min": 1,
+      "max": 100,
+      "step": 1,
       "label": "Products per page",
       "default": 8
     },
@@ -194,7 +319,7 @@
         { "value": "3", "label": "3" },
         { "value": "4", "label": "4" }
       ],
-      "default": "3"
+      "default": "4"
     },
     {
       "type": "range",
@@ -214,17 +339,7 @@
       "step": 2,
       "unit": "px",
       "label": "Grid gap",
-      "default": 16
-    },
-    {
-      "type": "range",
-      "id": "heading_margin",
-      "min": 0,
-      "max": 48,
-      "step": 2,
-      "unit": "px",
-      "label": "Heading bottom spacing",
-      "default": 18
+      "default": 24
     },
 
     {
@@ -234,24 +349,12 @@
     {
       "type": "range",
       "id": "heading_size",
-      "min": 16,
-      "max": 48,
+      "min": 0,
+      "max": 72,
       "step": 1,
       "unit": "px",
       "label": "Heading size",
-      "default": 28
-    },
-    {
-      "type": "select",
-      "id": "heading_weight",
-      "label": "Heading weight",
-      "options": [
-        { "value": "400", "label": "Regular" },
-        { "value": "500", "label": "Medium" },
-        { "value": "600", "label": "Semibold" },
-        { "value": "700", "label": "Bold" }
-      ],
-      "default": "600"
+      "default": 34
     },
     {
       "type": "color",
@@ -260,37 +363,14 @@
       "default": "#1a1a1a"
     },
     {
-      "type": "select",
-      "id": "heading_align",
-      "label": "Heading alignment",
-      "options": [
-        { "value": "left", "label": "Left" },
-        { "value": "center", "label": "Center" },
-        { "value": "right", "label": "Right" }
-      ],
-      "default": "left"
-    },
-    {
       "type": "range",
       "id": "title_size",
-      "min": 12,
-      "max": 32,
+      "min": 0,
+      "max": 72,
       "step": 1,
       "unit": "px",
       "label": "Title size",
-      "default": 16
-    },
-    {
-      "type": "select",
-      "id": "title_weight",
-      "label": "Title weight",
-      "options": [
-        { "value": "400", "label": "Regular" },
-        { "value": "500", "label": "Medium" },
-        { "value": "600", "label": "Semibold" },
-        { "value": "700", "label": "Bold" }
-      ],
-      "default": "600"
+      "default": 20
     },
     {
       "type": "color",
@@ -301,23 +381,12 @@
     {
       "type": "range",
       "id": "description_size",
-      "min": 10,
-      "max": 24,
+      "min": 0,
+      "max": 72,
       "step": 1,
       "unit": "px",
       "label": "Description size",
-      "default": 14
-    },
-    {
-      "type": "select",
-      "id": "description_weight",
-      "label": "Description weight",
-      "options": [
-        { "value": "400", "label": "Regular" },
-        { "value": "500", "label": "Medium" },
-        { "value": "600", "label": "Semibold" }
-      ],
-      "default": "400"
+      "default": 16
     },
     {
       "type": "color",
@@ -328,46 +397,23 @@
     {
       "type": "range",
       "id": "price_size",
-      "min": 12,
-      "max": 32,
+      "min": 0,
+      "max": 72,
       "step": 1,
       "unit": "px",
       "label": "Price size",
-      "default": 15
-    },
-    {
-      "type": "select",
-      "id": "price_weight",
-      "label": "Price weight",
-      "options": [
-        { "value": "400", "label": "Regular" },
-        { "value": "500", "label": "Medium" },
-        { "value": "600", "label": "Semibold" },
-        { "value": "700", "label": "Bold" }
-      ],
-      "default": "600"
+      "default": 18
     },
     {
       "type": "color",
       "id": "price_color",
       "label": "Price color",
-      "default": "#1f6feb"
+      "default": "#c9a882"
     },
 
     {
       "type": "header",
       "content": "Image"
-    },
-    {
-      "type": "range",
-      "id": "image_height",
-      "min": 120,
-      "max": 480,
-      "step": 8,
-      "unit": "px",
-      "label": "Image height",
-      "default": 224,
-      "info": "Used when aspect ratio is Auto"
     },
     {
       "type": "select",
@@ -379,7 +425,7 @@
         { "value": "3 / 4", "label": "Portrait (3:4)" },
         { "value": "4 / 3", "label": "Landscape (4:3)" },
         { "value": "16 / 9", "label": "Wide (16:9)" },
-        { "value": "auto", "label": "Auto (use height)" }
+        { "value": "auto", "label": "Auto" }
       ],
       "default": "1 / 1"
     },
@@ -392,86 +438,106 @@
         { "value": "contain", "label": "Contain" },
         { "value": "fill", "label": "Fill" }
       ],
-      "default": "cover"
-    },
-    {
-      "type": "range",
-      "id": "image_radius",
-      "min": 0,
-      "max": 32,
-      "step": 2,
-      "unit": "px",
-      "label": "Image corner radius",
-      "default": 0
+      "default": "contain"
     },
 
     {
       "type": "header",
-      "content": "Card"
+      "content": "Card buttons"
     },
     {
       "type": "range",
-      "id": "card_max_width",
-      "min": 160,
-      "max": 480,
-      "step": 8,
-      "unit": "px",
-      "label": "Card max width",
-      "default": 400
-    },
-    {
-      "type": "range",
-      "id": "card_padding",
+      "id": "action_font_size",
       "min": 0,
-      "max": 40,
-      "step": 2,
-      "unit": "px",
-      "label": "Card padding",
-      "default": 16
-    },
-    {
-      "type": "range",
-      "id": "corner_radius",
-      "min": 0,
-      "max": 32,
-      "step": 2,
-      "unit": "px",
-      "label": "Card corner radius",
-      "default": 16
-    },
-    {
-      "type": "range",
-      "id": "card_border_width",
-      "min": 0,
-      "max": 4,
+      "max": 72,
       "step": 1,
       "unit": "px",
-      "label": "Card border width",
-      "default": 1
+      "label": "Button font size",
+      "default": 16
     },
     {
       "type": "color",
-      "id": "card_border_color",
-      "label": "Card border color",
-      "default": "#e6e6e6"
-    },
-    {
-      "type": "color",
-      "id": "card_background",
-      "label": "Card background",
+      "id": "view_btn_bg",
+      "label": "View button background",
       "default": "#ffffff"
     },
     {
+      "type": "color",
+      "id": "view_btn_text",
+      "label": "View button text",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "customize_btn_bg",
+      "label": "Customize button background",
+      "default": "#1a1a2e"
+    },
+    {
+      "type": "color",
+      "id": "customize_btn_text",
+      "label": "Customize button text",
+      "default": "#ffffff"
+    },
+
+    {
+      "type": "header",
+      "content": "Pagination"
+    },
+    {
+      "type": "range",
+      "id": "pager_font_size",
+      "min": 0,
+      "max": 72,
+      "step": 1,
+      "unit": "px",
+      "label": "Page number size",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "pager_btn_size",
+      "min": 28,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "label": "Arrow button size",
+      "default": 44
+    },
+    {
+      "type": "color",
+      "id": "pager_active_color",
+      "label": "Active page number",
+      "default": "#1a1a2e"
+    },
+    {
+      "type": "color",
+      "id": "pager_inactive_color",
+      "label": "Inactive page number",
+      "default": "#c5c5c8"
+    },
+    {
+      "type": "color",
+      "id": "pager_prev_bg",
+      "label": "Previous button background",
+      "default": "#c5c5c8"
+    },
+    {
+      "type": "color",
+      "id": "pager_next_bg",
+      "label": "Next button background",
+      "default": "#1a1a2e"
+    },
+    {
       "type": "select",
-      "id": "card_shadow",
-      "label": "Card shadow",
+      "id": "pager_align",
+      "label": "Pagination alignment",
       "options": [
-        { "value": "none", "label": "None" },
-        { "value": "soft", "label": "Soft" },
-        { "value": "medium", "label": "Medium" },
-        { "value": "strong", "label": "Strong" }
+        { "value": "flex-start", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "flex-end", "label": "Right" }
       ],
-      "default": "none"
+      "default": "flex-start"
     },
 
     {
@@ -481,8 +547,20 @@
     {
       "type": "color",
       "id": "background",
-      "label": "Section background",
-      "default": "#ffffff"
+      "label": "Product list background",
+      "default": "#f6f4ef"
+    },
+    {
+      "type": "color",
+      "id": "detail_background",
+      "label": "Product page background",
+      "default": "#f6f4ef"
+    },
+    {
+      "type": "color",
+      "id": "designer_background",
+      "label": "Customize page background",
+      "default": "#f6f4ef"
     },
     {
       "type": "color",
@@ -494,7 +572,7 @@
       "type": "color",
       "id": "accent_color",
       "label": "Accent",
-      "default": "#1f6feb"
+      "default": "#c9a882"
     }
   ]
 }

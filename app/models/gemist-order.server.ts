@@ -204,10 +204,52 @@ export async function retryGemistOrder(shop: string, id: string) {
   return attemptGemistOrderSubmit(shop, id);
 }
 
+const MAX_AUTO_ATTEMPTS = 5;
+
+/**
+ * Best-effort auto-retry for pending/failed/retrying rows that still have
+ * attempts left. Safe to call from webhooks and admin loaders.
+ */
+export async function retryPendingGemistOrders(
+  shop: string,
+  options?: { limit?: number; maxAttempts?: number },
+) {
+  const limit = options?.limit ?? 5;
+  const maxAttempts = options?.maxAttempts ?? MAX_AUTO_ATTEMPTS;
+  const rows = await prisma.gemistOrderSubmission.findMany({
+    where: {
+      shop,
+      status: { in: ["pending", "failed", "retrying"] },
+      attempts: { lt: maxAttempts },
+    },
+    orderBy: { updatedAt: "asc" },
+    take: limit,
+  });
+  const results = [];
+  for (const row of rows) {
+    try {
+      results.push(await attemptGemistOrderSubmit(shop, row.id));
+    } catch (error) {
+      console.warn("[gemist order] auto-retry failed", row.id, error);
+    }
+  }
+  return results;
+}
+
 export async function listRecentGemistOrders(shop: string, take = 8) {
   return prisma.gemistOrderSubmission.findMany({
     where: { shop },
     orderBy: { createdAt: "desc" },
     take,
+  });
+}
+
+export async function countOrdersNeedingToken(shop: string) {
+  return prisma.gemistOrderSubmission.count({
+    where: {
+      shop,
+      status: { in: ["pending", "failed", "retrying"] },
+      error: { contains: "Bearer" },
+    },
   });
 }

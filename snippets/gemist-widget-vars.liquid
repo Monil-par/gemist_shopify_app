@@ -1,0 +1,80 @@
+{%- liquid
+  assign gemist_widgets = shop.metafields.app.gemist_widgets.value
+  if gemist_widgets == blank
+    assign gemist_widgets = shop.metafields['$app'].gemist_widgets.value
+  endif
+  if gemist_widgets == blank
+    assign gemist_widgets = app.metafields.gemist_widgets.value
+  endif
+  assign gemist_commerce = shop.metafields.app.gemist_commerce.value
+  if gemist_commerce == blank
+    assign gemist_commerce = shop.metafields['$app'].gemist_commerce.value
+  endif
+-%}
+{%- if gemist_widgets != blank -%}
+<style id="gemist-admin-widget-styles">
+{%- assign products = gemist_widgets.products -%}
+{%- assign detail = gemist_widgets.detail -%}
+{%- if products -%}
+[data-gemist-catalog] {
+  --gemist-heading-size: {{ products.headingFontSize }}px !important;
+  --gemist-title-size: {{ products.titleFontSize }}px !important;
+  --gemist-body-size: {{ products.bodyFontSize }}px !important;
+  --gemist-price-size: {{ products.priceFontSize }}px !important;
+  --gemist-image-size: {{ products.imageSize }}px !important;
+  --gemist-card-max-width: {{ products.cardMaxWidth }}px !important;
+  --gemist-card-padding: {{ products.cardPadding }}px !important;
+  --gemist-setting-radius: {{ products.cardRadius }}px !important;
+  --gemist-radius: {{ products.cardRadius }}px !important;
+  --gemist-gap: {{ products.gridGap }}px !important;
+  --gemist-cols: {{ products.columns }} !important;
+  --gemist-setting-bg: {{ products.background }} !important;
+  --gemist-setting-text: {{ products.textColor }} !important;
+  --gemist-setting-accent: {{ products.accentColor }} !important;
+  --gemist-bg: {{ products.background }} !important;
+  --gemist-text: {{ products.textColor }} !important;
+  --gemist-accent: {{ products.accentColor }} !important;
+}
+.gemist-products {
+  --gemist-cols: {{ products.columns }} !important;
+}
+{%- endif -%}
+{%- if detail -%}
+.gemist-detail,
+.gemist-designer-page,
+[data-gemist-detail],
+[data-gemist-designer-page] {
+  --gemist-detail-title-size: {{ detail.titleFontSize }}px !important;
+  --gemist-detail-body-size: {{ detail.bodyFontSize }}px !important;
+  --gemist-detail-price-size: {{ detail.priceFontSize }}px !important;
+  --gemist-detail-image-size: {{ detail.imageSize }}px !important;
+  --gemist-detail-thumb-size: {{ detail.thumbSize }}px !important;
+  --gemist-detail-gap: {{ detail.cardPadding }}px !important;
+  --gemist-detail-radius: {{ detail.cardRadius }}px !important;
+  --gemist-detail-specs-heading-size: {{ detail.specsHeadingSize | default: 12 }}px !important;
+  --gemist-detail-specs-label-size: {{ detail.specsLabelSize | default: 14 }}px !important;
+  --gemist-detail-specs-value-size: {{ detail.specsValueSize | default: 16 }}px !important;
+  --gemist-detail-specs-row-gap: {{ detail.specsRowGap | default: 12 }}px !important;
+  --gemist-detail-specs-column-gap: {{ detail.specsColumnGap | default: 32 }}px !important;
+  --gemist-detail-specs-section-gap: {{ detail.specsSectionGap | default: 40 }}px !important;
+  --gemist-detail-specs-columns: {{ detail.specsColumns | default: 2 }} !important;
+  --gemist-setting-bg: {{ detail.background | default: '#ffffff' }} !important;
+  --gemist-setting-text: {{ detail.textColor | default: '#1a1a1a' }} !important;
+  --gemist-setting-accent: {{ detail.accentColor | default: '#1f6feb' }} !important;
+  --gemist-bg: {{ detail.background | default: '#ffffff' }} !important;
+  --gemist-text: {{ detail.textColor | default: '#1a1a1a' }} !important;
+  --gemist-accent: {{ detail.accentColor | default: '#1f6feb' }} !important;
+  --gemist-lux-bg: {{ detail.background | default: '#ffffff' }} !important;
+  --gemist-lux-primary: {{ detail.textColor | default: '#1a1a1a' }} !important;
+  --gemist-lux-accent: {{ detail.accentColor | default: '#1f6feb' }} !important;
+  --gemist-radius: {{ detail.cardRadius }}px !important;
+}
+{%- endif -%}
+</style>
+{%- endif -%}
+{%- if gemist_commerce != blank -%}
+<script type="application/json" id="gemist-commerce-settings">{{ gemist_commerce | json }}</script>
+{%- endif -%}
+{%- if gemist_widgets != blank -%}
+<script type="application/json" id="gemist-widget-styles">{{ gemist_widgets | json }}</script>
+{%- endif -%}

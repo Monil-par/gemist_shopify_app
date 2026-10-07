@@ -73,6 +73,44 @@ model GemistOrderSubmission {
   @@index([shop, status])
 }
 
+/// License issued by the Gemist admin panel and activated for this shop.
+model StoreLicense {
+  id                  String    @id @default(cuid())
+  shop                String    @unique
+  licenseKey          String
+  /// active | inactive | expired | revoked | suspended | pending | invalid
+  status              String    @default("inactive")
+  message             String    @default("")
+  planCode            String    @default("")
+  planName            String    @default("")
+  planType            String    @default("")
+  expiresAt           DateTime?
+  lastVerifiedAt      DateTime?
+  lastCheckAttemptAt  DateTime?
+  lastError           String    @default("")
+  verifyIntervalHours Int       @default(6)
+  graceHours          Int       @default(72)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+}
+
+/// Last known Shopify app subscription for a shop (Billing API), read by storefront requests.
+model StoreSubscription {
+  id               String    @id @default(cuid())
+  shop             String    @unique
+  subscriptionId   String    @default("")
+  planName         String    @default("")
+  /// Shopify AppSubscriptionStatus (ACTIVE, PENDING, CANCELLED, DECLINED, EXPIRED, FROZEN) or NONE
+  status           String    @default("NONE")
+  test             Boolean   @default(false)
+  trialDays        Int       @default(0)
+  currentPeriodEnd DateTime?
+  lastCheckedAt    DateTime?
+  lastError        String    @default("")
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
 /// Per-shop storefront visibility for a Gemist style (slug).
 /// Missing row = active (shown on storefront).
 model MerchantCatalogStyle {
@@ -87,4 +125,23 @@ model MerchantCatalogStyle {
 
   @@unique([shop, slug])
   @@index([shop, status])
+}
+
+/// Specificity-based markup rule (SOW 3.7). Most matching conditions wins.
+/// conditionsJson: [{"optionType":"Metal Type","optionValue":"Natural Diamond"}, ...]
+model MarkupRule {
+  id             String   @id @default(cuid())
+  shop           String
+  name           String   @default("")
+  /// Absolute price multiplier, e.g. 2.5 = 2.5× Gemist price.
+  multiplier     Float
+  conditionsJson String   @default("[]")
+  /// Cached condition count for sorting; kept in sync on write.
+  specificity    Int      @default(0)
+  active         Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([shop, active])
+  @@index([shop, specificity])
 }

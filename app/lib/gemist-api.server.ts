@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { cacheGet, cacheSet, cacheDelete, withCache, CACHE_TTL_SECONDS } from "./cache.server";
 
 export type GemistProduct = {
@@ -49,6 +50,7 @@ export type SearchProductsResponse = {
 };
 
 export const DEFAULT_GEMIST_API_BASE_URL = "https://classique.dev.gemist.co";
+
 
 function joinUrl(base: string, path: string) {
   return `${base.replace(/\/+$/, "")}${path}`;
@@ -262,6 +264,25 @@ export async function createGemistShopifyProduct({
   });
 }
 
+/** GET /api/products/shopify/metadata?id= — Shopify ids for a Gemist product. */
+export async function getGemistShopifyMetadata({
+  apiBaseUrl,
+  productId,
+  bearer,
+}: {
+  apiBaseUrl: string;
+  productId: string;
+  bearer?: string;
+}): Promise<{ productId?: string; variantId?: string; handle?: string; status?: string }> {
+  const headers: Record<string, string> = { Accept: "application/json" };
+  if (bearer) headers.Authorization = `Bearer ${bearer}`;
+  const url = joinUrl(
+    apiBaseUrl,
+    `/api/products/shopify/metadata?id=${encodeURIComponent(productId)}`,
+  );
+  return fetchJson(url, { headers });
+}
+
 export async function searchGemistProducts({
   apiBaseUrl,
   baseProductId,
@@ -281,21 +302,36 @@ export async function searchGemistProducts({
   if (baseProductId) body.baseProductId = baseProductId;
   if (slug) body.slug = slug;
   if (productParts && Object.keys(productParts).length) {
-    body.productParts = productParts;
+    body.productParts = Object.fromEntries(
+      Object.entries(productParts).sort(([a], [b]) => a.localeCompare(b)),
+    );
   }
 
-  return fetchJson<SearchProductsResponse>(
-    joinUrl(apiBaseUrl, "/api/products/search"),
-    {
+  const serialized = JSON.stringify(body);
+  const key = `gemist:v1:search:${cacheScope(apiBaseUrl)}:${createHash("sha1")
+    .update(serialized)
+    .digest("hex")}`;
+  const inflight = searchInflight.get(key);
+  if (inflight) return inflight;
+
+  // Gemist search takes 0.3-10s and its results change rarely, so cache
+  // them and share concurrent identical requests.
+  const request = withCache(key, SEARCH_TTL_SECONDS, () =>
+    fetchJson<SearchProductsResponse>(joinUrl(apiBaseUrl, "/api/products/search"), {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(body),
-    },
-  );
+      body: serialized,
+    }),
+  ).finally(() => searchInflight.delete(key));
+  searchInflight.set(key, request);
+  return request;
 }
+
+const SEARCH_TTL_SECONDS = 6 * 60 * 60;
+const searchInflight = new Map<string, Promise<SearchProductsResponse>>();
 
 export function getGemistOrderBearer(merchantSecret?: string) {
   return (process.env.GEMIST_ORDER_BEARER || merchantSecret || "").trim();
@@ -495,7 +531,13 @@ export async function getGemistStyleProduct(
   return request;
 }
 
-export async function pingGemistApi(apiBaseUrl: string) {
+/**
+ * Catalog reachability ping. When `bearer` is provided, also probes the
+ * Bearer-protected order endpoint (empty lineItems): 401 = invalid token,
+ * any other response means the auth layer accepted the token.
+ * Gemist has no dedicated credential-validate route in OpenAPI yet.
+ */
+export async function pingGemistApi(apiBaseUrl: string, bearer?: string) {
   let health: GemistHealth | null = null;
   try {
     health = await getGemistHealth(apiBaseUrl);
@@ -504,17 +546,37 @@ export async function pingGemistApi(apiBaseUrl: string) {
   }
 
   const slugs = await getGemistCatalogSlugs(apiBaseUrl);
+  let credentialsValidated = false;
+  let credentialsMessage = "";
+  const token = (bearer || "").trim();
+  if (token) {
+    const probe = await submitGemistDraftOrder({
+      apiBaseUrl,
+      bearer: token,
+      body: { lineItems: [] },
+    });
+    if (probe.ok) {
+      credentialsValidated = true;
+      credentialsMessage = "Order API token accepted.";
+    } else if (probe.status === 401) {
+      credentialsValidated = false;
+      credentialsMessage = "Order API token was rejected (401).";
+    } else {
+      // 400/422/etc. after auth — treat as token accepted at the auth layer.
+      credentialsValidated = true;
+      credentialsMessage = `Order API token accepted (Gemist responded ${probe.status}).`;
+    }
+  } else {
+    credentialsMessage = "No order token saved — catalog check only.";
+  }
+
   return {
     ok: Array.isArray(slugs),
     styleCount: Array.isArray(slugs) ? slugs.length : 0,
     version: health?.version || "",
     healthMessage: health?.message || "",
-    /**
-     * API DEPENDENCY: OpenAPI does not document a credential-validation route.
-     * Merchant secret is only proven when calling Bearer-protected
-     * POST /api/orders/shopify/draft.
-     */
-    credentialsValidated: false as const,
+    credentialsValidated,
+    credentialsMessage,
   };
 }
 

@@ -14,8 +14,18 @@ import {
   getCatalogStatusMap,
   getCatalogStyleStatus,
 } from "../models/merchant-catalog.server";
+import { STORE_INACTIVE_MESSAGE, storefrontAccess } from "../lib/access.server";
 
-function json(data: unknown) {
+const inactive = {
+  slugs: [],
+  products: [],
+  productsCount: 0,
+  product: null,
+  licenseInactive: true,
+  error: STORE_INACTIVE_MESSAGE,
+};
+
+function jsonResponse(data: unknown) {
   return new Response(JSON.stringify(data), {
     status: 200,
     headers: {
@@ -42,7 +52,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     shop = context.shop;
   } catch (error) {
     console.error("[gemist proxy] auth failed", error);
-    return json({
+    return jsonResponse({
       slugs: [],
       products: [],
       productsCount: 0,
@@ -50,6 +60,11 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         "App proxy authentication failed. Reinstall the Gemist app on this store, then run shopify app deploy.",
     });
   }
+
+  const access = await storefrontAccess(shop, request);
+  if (!access.allowed) return jsonResponse(inactive);
+  const json = (data: object) =>
+    jsonResponse(access.previewOnly ? { ...data, previewOnly: true } : data);
 
   const url = new URL(request.url);
   const slug = (url.searchParams.get("slug") || "").trim();
@@ -134,12 +149,17 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     shop = context.shop;
   } catch (error) {
     console.error("[gemist proxy] auth failed", error);
-    return json({
+    return jsonResponse({
       products: [],
       error:
         "App proxy authentication failed. Reinstall the Gemist app on this store, then run shopify app deploy.",
     });
   }
+
+  const access = await storefrontAccess(shop, request);
+  if (!access.allowed) return jsonResponse(inactive);
+  const json = (data: object) =>
+    jsonResponse(access.previewOnly ? { ...data, previewOnly: true } : data);
 
   const apiBaseUrl = await resolveApiBase(shop);
 

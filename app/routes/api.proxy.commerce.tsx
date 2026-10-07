@@ -2,6 +2,9 @@ import type { LoaderFunctionArgs } from "react-router";
 import { authenticateAppProxy } from "../lib/app-proxy.server";
 import { getMerchantSettings } from "../models/merchant-settings.server";
 import { getSavedWidgetStyles } from "../models/widget-styles.server";
+import { storefrontAccess } from "../lib/access.server";
+import { isAppointmentsEnabled } from "../lib/features.server";
+import { listActiveMarkupRules } from "../models/markup-rules.server";
 
 function json(data: unknown) {
   return new Response(JSON.stringify(data), {
@@ -43,6 +46,11 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     return json(empty);
   }
 
+  const access = await storefrontAccess(shop, request);
+  if (!access.allowed) {
+    return json({ ...empty, licenseInactive: true });
+  }
+
   let settings = {
     apiBaseUrl: "",
     markupPercent: 0,
@@ -68,12 +76,38 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     }
   }
 
+  const appointments = isAppointmentsEnabled();
+  let markupRules: Array<{
+    id: string;
+    name: string;
+    multiplier: number;
+    conditions: Array<{ optionType: string; optionValue: string }>;
+    specificity: number;
+  }> = [];
+  try {
+    if (shop) {
+      const rules = await listActiveMarkupRules(shop);
+      markupRules = rules.map((rule) => ({
+        id: rule.id,
+        name: rule.name,
+        multiplier: rule.multiplier,
+        conditions: rule.conditions,
+        specificity: rule.specificity,
+      }));
+    }
+  } catch (error) {
+    console.warn("[gemist commerce] markup rules unavailable", error);
+  }
+
   return json({
     apiBaseUrl: settings.apiBaseUrl,
     markupPercent: settings.markupPercent,
-    appointmentUrl: settings.appointmentUrl,
-    appointmentEmail: settings.appointmentEmail,
-    appointmentLabel: settings.appointmentLabel,
+    markupRules,
+    appointmentUrl: appointments ? settings.appointmentUrl : "",
+    appointmentEmail: appointments ? settings.appointmentEmail : "",
+    appointmentLabel: appointments ? settings.appointmentLabel : "",
+    appointmentsEnabled: appointments,
     styles,
+    ...(access.previewOnly ? { previewOnly: true } : {}),
   });
 };

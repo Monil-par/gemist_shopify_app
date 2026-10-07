@@ -4,25 +4,31 @@ import { boundary } from "@shopify/shopify-app-react-router/server";
 import { AppProvider } from "@shopify/shopify-app-react-router/react";
 
 import { authenticate } from "../shopify.server";
+import { isMonetizationEnabled } from "../lib/features.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   await authenticate.admin(request);
 
   // eslint-disable-next-line no-undef
-  return { apiKey: process.env.SHOPIFY_API_KEY || "" };
+  return {
+    apiKey: process.env.SHOPIFY_API_KEY || "",
+    showPlan: isMonetizationEnabled(),
+  };
 };
 
 export default function App() {
-  const { apiKey } = useLoaderData<typeof loader>();
+  const { apiKey, showPlan } = useLoaderData<typeof loader>();
 
   return (
     <AppProvider embedded apiKey={apiKey}>
       <s-app-nav>
         <s-link href="/app">Home</s-link>
         <s-link href="/app/products">Products</s-link>
+        <s-link href="/app/pricing">Pricing</s-link>
         <s-link href="/app/settings">Settings</s-link>
         <s-link href="/app/theme">Theme</s-link>
         <s-link href="/app/widgets">Widgets</s-link>
+        {showPlan ? <s-link href="/app/billing">Plan</s-link> : null}
       </s-app-nav>
       <Outlet />
     </AppProvider>

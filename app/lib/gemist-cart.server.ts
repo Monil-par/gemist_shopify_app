@@ -37,7 +37,12 @@ export type GemistCartLine = {
 export async function createGemistCartLine(
   admin: Admin,
   product: GemistProduct,
-  options?: { price?: string; engraving?: string },
+  options?: {
+    price?: string;
+    engraving?: string;
+    engravingFont?: string;
+    engravingFee?: number;
+  },
 ): Promise<GemistCartLine> {
   if (!product.id) {
     throw new Error("Gemist product is missing an id.");
@@ -50,7 +55,11 @@ export async function createGemistCartLine(
     64,
   );
   const imageUrl = productImageUrl(product);
-  const properties = cartProperties(product, options?.engraving);
+  const properties = cartProperties(product, {
+    engraving: options?.engraving,
+    engravingFont: options?.engravingFont,
+    engravingFee: options?.engravingFee,
+  });
 
   const parent = await findStructuralProduct(admin);
   const variantInput = { price, sku, configName, imageUrl };
@@ -122,8 +131,18 @@ function humanize(value: string) {
 
 export function cartProperties(
   product: GemistProduct,
-  engraving?: string,
+  engravingOrOptions?:
+    | string
+    | {
+        engraving?: string;
+        engravingFont?: string;
+        engravingFee?: number;
+      },
 ): Record<string, string> {
+  const options =
+    typeof engravingOrOptions === "string" || engravingOrOptions == null
+      ? { engraving: engravingOrOptions || "" }
+      : engravingOrOptions;
   const configId = String(product.id ?? "");
   const properties: Record<string, string> = {
     _gemist_product_id: configId,
@@ -163,13 +182,13 @@ export function cartProperties(
   const parts = product.productParts || product.defaultProductMetadata;
   if (parts && typeof parts === "object") {
     const partMap: Record<string, string> = {
-      metal: "Metal",
+      metal: "Metal Type",
       metal_color: "Metal Color",
-      stone: "Stone",
-      shape: "Shape",
-      coverage: "Coverage",
+      stone: "Stone Type",
+      shape: "Stone Shape",
+      coverage: "Pavé",
       band_width: "Band Width",
-      orientation: "Orientation",
+      orientation: "Side Stones",
       ring_size: "Ring Size",
       style: "Style",
     };
@@ -178,14 +197,24 @@ export function cartProperties(
       if (value == null || value === "" || typeof value === "object") continue;
       const key = partMap[label] || humanize(label);
       if (properties[key]) continue;
-      properties[key] = clip(String(value));
+      properties[key] = clip(cartPartDisplayValue(label, String(value)));
     }
   }
 
-  const trimmed = engraving?.trim();
+  const trimmed = options.engraving?.trim();
   if (trimmed) {
     properties.Engraving = clip(trimmed, 40);
     properties._engraving_text = clip(trimmed, 40);
+    const font = options.engravingFont?.trim();
+    if (font) {
+      properties["Engraving Font"] = clip(font, 40);
+      properties._engraving_font = clip(font, 40);
+    }
+    const fee = Number(options.engravingFee);
+    if (Number.isFinite(fee) && fee > 0) {
+      properties["Engraving Cost"] = clip(`+$${Math.round(fee)}`, 40);
+      properties._engraving_fee = String(Math.round(fee * 100) / 100);
+    }
   }
 
   if (Object.keys(properties).length < MAX_PROPERTIES && parts && typeof parts === "object") {
@@ -201,6 +230,23 @@ export function cartProperties(
   }
 
   return properties;
+}
+
+function cartPartDisplayValue(key: string, value: string) {
+  if (!value || value.toUpperCase() === "NA") return "None";
+  if (key === "coverage") {
+    const map: Record<string, string> = {
+      "1/2 Eternity": "Half Pavé",
+      "3/4 Eternity": "¾ Pavé",
+      "Full Eternity": "Full Pavé",
+    };
+    return map[value] || value;
+  }
+  if (key === "stone") {
+    if (/laboratory\s*grown/i.test(value)) return "Lab-Grown Diamond";
+    if (/natural/i.test(value)) return "Natural Diamond";
+  }
+  return value;
 }
 
 function numericIdFromGid(gid: string) {

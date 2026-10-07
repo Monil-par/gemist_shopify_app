@@ -135,39 +135,148 @@
 }
 
 .gemist-products {
-  --gemist-bg: var(--gemist-setting-bg, #ffffff);
+  --gemist-bg: var(--gemist-list-bg, var(--gemist-setting-bg, #ffffff));
   --gemist-text: var(--gemist-setting-text, #1a1a1a);
   --gemist-muted: color-mix(in srgb, var(--gemist-text) 62%, transparent);
   --gemist-accent: var(--gemist-setting-accent, #1f6feb);
   --gemist-border: color-mix(in srgb, var(--gemist-text) 12%, transparent);
   --gemist-radius: var(--gemist-setting-radius, 16px);
+  --gemist-font-heading: "Canela Text Trial", "Iowan Old Style", Palatino, Georgia,
+    serif;
+  --gemist-font-body: "Helvetica Neue Ultra Light", "Helvetica Neue", Helvetica,
+    Arial, sans-serif;
 
   box-sizing: border-box;
   width: 100%;
+  min-height: 100vh;
+  margin: 0;
   padding: var(--gemist-section-padding, 0);
   color: var(--gemist-text);
+  background: var(--gemist-list-bg, var(--gemist-bg, #f6f4ef));
+  font-family: var(--gemist-font-body);
+  font-weight: 100;
+  -webkit-font-smoothing: antialiased;
+}
+
+.gemist-products [data-gemist-catalog] {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: inherit;
+  background: transparent;
 }
 
 .gemist-products__heading {
-  margin: 0 0 var(--gemist-heading-margin, 1.1rem);
+  margin: 0 0 var(--gemist-heading-margin, 0.65rem);
   color: var(--gemist-heading-color, var(--gemist-text));
-  font-size: var(--gemist-heading-size, clamp(1.35rem, 2.4vw, 1.85rem));
-  font-weight: var(--gemist-heading-weight, 600);
-  letter-spacing: -0.03em;
+  font-family: var(--gemist-font-heading);
+  font-size: var(--gemist-heading-size, 1.2rem);
+  font-weight: 100;
+  letter-spacing: -0.02em;
   line-height: 1.2;
-  text-align: var(--gemist-heading-align, left);
+  text-align: left;
 }
 
 .gemist-products__status {
-  margin: 0;
+  margin: 0 0 1rem;
   color: var(--gemist-muted);
-  font-size: 0.95rem;
+  font-size: 1.5rem;
+}
+
+.gemist-catalog__layout {
+  display: grid;
+  grid-template-columns: minmax(14rem, 17.5rem) minmax(0, 1fr);
+  gap: clamp(1.5rem, 3vw, 2.75rem);
+  align-items: start;
+}
+
+.gemist-catalog__filters {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-top: 0.15rem;
+}
+
+.gemist-catalog__filters[hidden] {
+  display: none;
+}
+
+.gemist-catalog__filter {
+  margin: 0;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid #e8e6e1;
+}
+
+.gemist-catalog__filter:first-child {
+  padding-top: 0;
+}
+
+.gemist-catalog__filter-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  list-style: none;
+  cursor: pointer;
+  color: #2c2a37;
+  font-family: var(--gemist-font-body);
+  font-size: 1.8rem;
+  font-weight: 100;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.gemist-catalog__filter-title::-webkit-details-marker {
+  display: none;
+}
+
+.gemist-catalog__filter-title::after {
+  content: "";
+  width: 0.45rem;
+  height: 0.45rem;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.15s ease;
+  flex: 0 0 auto;
+}
+
+.gemist-catalog__filter[open] > .gemist-catalog__filter-title::after {
+  transform: rotate(-135deg);
+  margin-top: 0.2rem;
+}
+
+.gemist-catalog__filter-options {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 0.85rem;
+}
+
+.gemist-catalog__filter-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  color: #6b6b6b;
+  font-family: var(--gemist-font-body);
+  font-size: 1.5rem;
+  font-weight: 100;
+  line-height: 1.35;
+  cursor: pointer;
+}
+
+.gemist-catalog__filter-option input {
+  margin: 0.2rem 0 0;
+  accent-color: #2c2a37;
+}
+
+.gemist-catalog__main {
+  min-width: 0;
 }
 
 .gemist-products__grid {
   display: grid;
-  grid-template-columns: repeat(var(--gemist-cols, 3), minmax(0, 1fr));
-  gap: var(--gemist-gap, 1rem);
+  grid-template-columns: repeat(var(--gemist-cols, 4), minmax(0, 1fr));
+  gap: var(--gemist-gap, 1.5rem) var(--gemist-gap, 1.75rem);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -176,40 +285,24 @@
 .gemist-product-card {
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: visible;
   height: 100%;
   width: 100%;
   max-width: var(--gemist-card-max-width, none);
   margin-inline: auto;
   color: inherit;
   text-decoration: none;
-  background: var(
-    --gemist-card-bg,
-    var(--gemist-bg, var(--gemist-setting-bg, #ffffff))
-  );
-  border: var(--gemist-card-border-width, 1px) solid
-    var(
-      --gemist-card-border-color,
-      var(
-        --gemist-border,
-        color-mix(in srgb, var(--gemist-setting-text, #1a1a1a) 12%, transparent)
-      )
-    );
-  border-radius: var(--gemist-radius, var(--gemist-setting-radius, 16px));
+  background: transparent;
+  border: 0;
+  border-radius: 0;
   box-shadow: none;
-  transition: transform 0.16s ease, box-shadow 0.16s ease;
+  transition: opacity 0.16s ease;
 }
 
-.gemist-products[data-card-shadow="soft"] .gemist-product-card {
-  box-shadow: 0 6px 18px color-mix(in srgb, #000 8%, transparent);
-}
-
-.gemist-products[data-card-shadow="medium"] .gemist-product-card {
-  box-shadow: 0 10px 28px color-mix(in srgb, #000 12%, transparent);
-}
-
+.gemist-products[data-card-shadow="soft"] .gemist-product-card,
+.gemist-products[data-card-shadow="medium"] .gemist-product-card,
 .gemist-products[data-card-shadow="strong"] .gemist-product-card {
-  box-shadow: 0 16px 40px color-mix(in srgb, #000 18%, transparent);
+  box-shadow: none;
 }
 
 .gemist-product-card__link {
@@ -223,8 +316,9 @@
 
 .gemist-product-card:hover,
 .gemist-product-card:focus-within {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 24px color-mix(in srgb, #000 12%, transparent);
+  transform: none;
+  box-shadow: none;
+  opacity: 0.92;
 }
 
 .gemist-product-card--skeleton {
@@ -240,13 +334,14 @@
 }
 
 .gemist-skel--title {
-  width: 70%;
+  width: 85%;
   height: 1rem;
+  margin-top: 0.45rem;
 }
 
 .gemist-skel--line {
-  width: 46%;
-  margin-top: 0.45rem;
+  width: 100%;
+  margin-top: 0;
 }
 
 @keyframes gemist-pulse {
@@ -259,135 +354,289 @@
   }
 }
 
+.gemist-product-card__badge {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.65rem;
+  left: auto;
+  z-index: 2;
+  display: block;
+  width: fit-content;
+  max-width: calc(100% - 1.3rem);
+  margin: 0;
+  padding: 0.35rem 0.75rem;
+  border-radius: 2px;
+  background: #f7e4e6;
+  color: #c45c66;
+  font-family: var(--gemist-font-body);
+  font-size: 0.95rem;
+  font-weight: 100;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  text-align: center;
+  text-transform: uppercase;
+  transform: none;
+  opacity: 1;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+
+.gemist-product-card:hover .gemist-product-card__badge,
+.gemist-product-card:focus-within .gemist-product-card__badge {
+  opacity: 0;
+}
+
+.gemist-product-card__media {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: var(--gemist-image-ratio, 1);
+  background: #f4f4f4;
+  overflow: hidden;
+}
+
 .gemist-product-card__image {
   display: block;
   width: 100%;
+  height: 100%;
+  object-fit: var(--gemist-image-fit, contain);
+  border-radius: var(--gemist-image-radius, 0);
+  background: #f4f4f4;
+}
+
+.gemist-product-card__media > .gemist-product-card__image {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  pointer-events: none;
+}
+
+.gemist-product-card__media > .gemist-product-card__image.is-active {
+  opacity: 1;
+  z-index: 1;
+}
+
+.gemist-product-card__media > .gemist-product-card__image:first-child {
+  position: relative;
   height: var(--gemist-image-size, auto);
   aspect-ratio: var(--gemist-image-ratio, 1);
-  object-fit: var(--gemist-image-fit, cover);
-  border-radius: var(--gemist-image-radius, 0);
-  background: color-mix(in srgb, var(--gemist-setting-bg, #fff) 88%, var(--gemist-setting-accent, #1f6feb) 12%);
 }
 
 .gemist-product-card__body {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
-  padding: var(--gemist-card-padding, 1rem);
-  padding-bottom: 0.55rem;
+  padding: 0.85rem 0 0;
+}
+
+.gemist-product-card__meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.gemist-product-card__brand {
+  min-width: 0;
+  color: #9a9a9a;
+  font-family: var(--gemist-font-body);
+  font-size: 1.17rem;
+  font-weight: 100;
+  letter-spacing: 0.06em;
+  line-height: 1.3;
+  text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gemist-product-card__price {
+  flex: 0 0 auto;
+  margin: 0;
+  color: #2a2a2a;
+  font-family: var(--gemist-font-body);
+  font-size: var(--gemist-price-size, 1rem);
+  font-weight: 100;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.gemist-product-card__price-from {
+  color: #9a9a9a;
+  font-weight: 100;
 }
 
 .gemist-product-card__title {
   margin: 0;
-  color: var(--gemist-title-color, var(--gemist-text, #1a1a1a));
+  color: var(--gemist-title-color, #3a3a3a);
+  font-family: var(--gemist-font-body);
   font-size: var(--gemist-title-size, 1rem);
-  font-weight: var(--gemist-title-weight, 600);
+  font-weight: 100;
   line-height: 1.35;
 }
 
 .gemist-product-card__subtitle {
-  margin: 0;
+  margin: 0.15rem 0 0;
   color: var(
     --gemist-body-color,
     var(--gemist-muted, color-mix(in srgb, var(--gemist-setting-text, #1a1a1a) 62%, transparent))
   );
-  font-size: var(--gemist-body-size, 0.85rem);
-  font-weight: var(--gemist-body-weight, 400);
-  line-height: 1.45;
-}
-
-.gemist-product-card__price {
-  margin: 0.25rem 0 0;
-  color: var(--gemist-price-color, var(--gemist-setting-accent, var(--gemist-accent, #1f6feb)));
-  font-size: var(--gemist-price-size, 0.95rem);
-  font-weight: var(--gemist-price-weight, 650);
+  font-family: var(--gemist-font-body);
+  font-size: var(--gemist-body-size, 0.95rem);
+  font-weight: 100;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
 }
 
 .gemist-products__pager {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.65rem 0.85rem;
-  margin-top: 3rem;
-  margin-bottom: 3rem;
-}
-
-.gemist-products__page-btn,
-.gemist-products__page-num {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 2.25rem;
-  padding: 0 0.8rem;
-  border: 1px solid var(--gemist-border);
-  border-radius: 999px;
-  color: inherit;
-  text-decoration: none;
-  font-size: 0.88rem;
-  font-weight: 600;
-  background: var(--gemist-bg);
-}
-
-.gemist-products__page-btn[aria-disabled="true"] {
-  opacity: 0.45;
-  pointer-events: none;
-}
-
-.gemist-products__page-num[aria-current="page"],
-.gemist-products__page-btn:hover,
-.gemist-products__page-num:hover {
-  border-color: var(--gemist-accent);
-  color: var(--gemist-accent);
+  justify-content: var(--gemist-pager-align, flex-start);
+  gap: 1.25rem 1.75rem;
+  margin-top: 1.75rem;
+  margin-bottom: 1rem;
 }
 
 .gemist-products__page-numbers {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  align-items: center;
+  gap: 0.85rem 1.1rem;
+}
+
+.gemist-products__page-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0.75em;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--gemist-pager-inactive, #c5c5c8);
+  font-family: var(--gemist-font-body);
+  font-size: var(--gemist-pager-font-size, 1.125rem);
+  font-weight: 100;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.gemist-products__page-num:hover {
+  color: var(--gemist-pager-active, #1a1a2e);
+}
+
+.gemist-products__page-num[aria-current="page"] {
+  color: var(--gemist-pager-active, #1a1a2e);
+  font-weight: 100;
+  cursor: default;
+  pointer-events: none;
+}
+
+.gemist-products__page-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.gemist-products__page-btn {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--gemist-pager-btn-size, 2.75rem);
+  height: var(--gemist-pager-btn-size, 2.75rem);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: var(--gemist-pager-icon, #ffffff);
+  text-decoration: none;
+  cursor: pointer;
+  transition: filter 0.15s ease, opacity 0.15s ease;
+}
+
+.gemist-products__page-btn svg {
+  display: block;
+  width: 36%;
+  height: 36%;
+}
+
+.gemist-products__page-btn--prev {
+  background: var(--gemist-pager-prev-bg, #c5c5c8);
+}
+
+.gemist-products__page-btn--next {
+  background: var(--gemist-pager-next-bg, #1a1a2e);
+}
+
+.gemist-products__page-btn:hover:not([aria-disabled="true"]) {
+  filter: brightness(1.08);
+}
+
+.gemist-products__page-btn[aria-disabled="true"] {
+  opacity: 0.45;
+  pointer-events: none;
+  cursor: default;
 }
 
 .gemist-products__page-status {
-  margin: 0;
-  color: var(--gemist-muted);
-  font-size: 0.88rem;
+  display: none;
 }
 
 /* ── Product detail (luxury PDP) ── */
 
 .gemist-detail {
-  --gemist-lux-primary: var(--gemist-setting-text, #111111);
-  --gemist-lux-secondary: color-mix(
-    in srgb,
-    var(--gemist-setting-text, #111111) 62%,
-    transparent
+  --gemist-lux-primary: #1a1a1a;
+  --gemist-lux-secondary: #5c5c5c;
+  --gemist-lux-muted: #8a8a8a;
+  --gemist-lux-border: #e5e1d8;
+  --gemist-lux-surface: #ffffff;
+  --gemist-lux-bg: var(--gemist-detail-bg, #f6f4ef);
+  --gemist-lux-accent: #c9a882;
+  --gemist-lux-cta: #111111;
+  --gemist-lux-radius: 12px;
+  --gemist-lux-serif: var(
+    --gemist-font-heading,
+    "Canela Text Trial",
+    "Iowan Old Style",
+    "Palatino Linotype",
+    Palatino,
+    Georgia,
+    "Times New Roman",
+    serif
   );
-  --gemist-lux-muted: color-mix(
-    in srgb,
-    var(--gemist-setting-text, #111111) 45%,
-    transparent
-  );
-  --gemist-lux-border: color-mix(
-    in srgb,
-    var(--gemist-setting-text, #111111) 12%,
-    #e5e5e5
-  );
-  --gemist-lux-surface: color-mix(
-    in srgb,
-    var(--gemist-setting-bg, #ffffff) 94%,
-    var(--gemist-setting-text, #111111) 6%
-  );
-  --gemist-lux-bg: var(--gemist-setting-bg, #ffffff);
-  --gemist-lux-accent: var(--gemist-setting-accent, #111111);
 
   box-sizing: border-box;
-  width: min(1400px, calc(100% - 64px));
+  width: 100%;
+  max-width: none;
+  min-height: 100vh;
+  margin: 0;
+  padding: 1rem 0 1.25rem;
+  color: var(--gemist-lux-primary);
+  background: var(--gemist-detail-bg, var(--gemist-lux-bg, #f6f4ef));
+  font-family: var(
+    --gemist-font-body,
+    "Helvetica Neue Ultra Light",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif
+  );
+  font-weight: 100;
+  -webkit-font-smoothing: antialiased;
+}
+
+.gemist-detail__layout {
+  box-sizing: border-box;
+  width: min(1400px, calc(100% - 24px));
   max-width: 100%;
   margin: 0 auto;
-  padding: clamp(2.5rem, 5vw, 4rem) 0 clamp(3rem, 6vw, 5rem);
-  color: var(--gemist-lux-primary);
-  background: var(--gemist-lux-bg);
-  font-family: inherit;
-  -webkit-font-smoothing: antialiased;
 }
 
 .gemist-detail *,
@@ -397,52 +646,966 @@
 }
 
 .gemist-designer-page {
-  --gemist-lux-primary: var(--gemist-setting-text, #111111);
-  --gemist-lux-secondary: color-mix(
-    in srgb,
-    var(--gemist-setting-text, #111111) 62%,
-    transparent
-  );
-  --gemist-lux-muted: color-mix(
-    in srgb,
-    var(--gemist-setting-text, #111111) 45%,
-    transparent
-  );
-  --gemist-lux-border: color-mix(
-    in srgb,
-    var(--gemist-setting-text, #111111) 12%,
-    #e5e5e5
-  );
-  --gemist-lux-surface: color-mix(
-    in srgb,
-    var(--gemist-setting-bg, #ffffff) 94%,
-    var(--gemist-setting-text, #111111) 6%
-  );
-  --gemist-lux-bg: var(--gemist-setting-bg, #ffffff);
-  --gemist-lux-accent: var(--gemist-setting-accent, #111111);
+  /* Match Gemist designer reference: cream canvas, tan accents, thin borders */
+  --gemist-lux-primary: #1a1a1a;
+  --gemist-lux-secondary: #5c5c5c;
+  --gemist-lux-muted: #8a8a8a;
+  --gemist-lux-border: #e5e1d8;
+  --gemist-lux-border-strong: #1a1a1a;
+  --gemist-lux-surface: #ffffff;
+  --gemist-lux-bg: var(--gemist-designer-bg, #f6f4ef);
+  --gemist-lux-accent: #c9a882;
+  --gemist-lux-cta: #111111;
+  --gemist-lux-radius: 12px;
+  --gemist-font-heading: "Canela Text Trial", "Iowan Old Style", Palatino, Georgia,
+    serif;
+  --gemist-font-body: "Helvetica Neue Ultra Light", "Helvetica Neue", Helvetica,
+    Arial, sans-serif;
+  --gemist-lux-serif: var(--gemist-font-heading);
 
+  box-sizing: border-box;
   color: var(--gemist-lux-primary);
-  background: var(--gemist-lux-bg);
-  width: min(1400px, calc(100% - 64px));
-  max-width: 100%;
-  margin: 0 auto;
+  background: var(--gemist-designer-bg, var(--gemist-lux-bg, #f6f4ef));
+  width: 100%;
+  max-width: none;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  font-family: var(--gemist-font-body);
+  font-weight: 100;
+  -webkit-font-smoothing: antialiased;
+}
+
+html.gemist-designer-open,
+body.gemist-designer-open {
+  background: var(--gemist-designer-bg, #f6f4ef) !important;
+}
+
+html.gemist-detail-open,
+body.gemist-detail-open {
+  background: var(--gemist-detail-bg, #f6f4ef) !important;
+}
+
+html.gemist-catalog-open,
+body.gemist-catalog-open {
+  background: var(--gemist-list-bg, #f6f4ef) !important;
+}
+
+.gemist-designer-page__layout,
+.gemist-designer-page__layout--studio {
+  background: transparent;
+}
+
+body.gemist-designer-open .shopify-section,
+body.gemist-designer-open .gemist-products-block,
+body.gemist-designer-open [data-gemist-products] {
+  background: #f6f4ef !important;
 }
 
 .gemist-designer-page__layout {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(420px, 0.8fr);
-  gap: clamp(2rem, 4vw, 3.5rem) clamp(2rem, 5vw, 4.5rem);
+  gap: 1rem 1.25rem;
   align-items: start;
 }
 
-.gemist-designer-page__layout > .gemist-detail__back {
+.gemist-designer-page__layout--studio {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(420px, 580px);
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 0.75rem 1rem;
+  align-items: stretch;
+  width: min(1440px, calc(100% - 1rem));
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 0 0.5rem;
+  height: calc(100vh - 1.25rem);
+  min-height: calc(100vh - 1.25rem);
+  max-height: calc(100vh - 1.25rem);
+  box-sizing: border-box;
+}
+
+.gemist-designer-page__layout--studio > .gemist-designer-page__back {
   grid-column: 1 / -1;
+  margin: 0.35rem 0 0;
+}
+
+.gemist-designer-page__layout--studio > .gemist-designer-stage,
+.gemist-designer-page__layout--studio > .gemist-designer-panel {
+  min-height: 0;
+  height: 100%;
+  max-height: 100%;
+}
+
+/* ── Native designer studio (mockup layout) — keep existing font families/sizes ── */
+
+.gemist-designer-stage {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 0;
+}
+
+.gemist-designer-stage__toolbar {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.35rem;
+  pointer-events: auto;
+}
+
+.gemist-designer-stage__icon-btn {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  z-index: 6;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #5c5c5c;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  pointer-events: auto;
+}
+
+.gemist-designer-stage__icon-btn--end {
+  margin-left: auto;
+}
+
+.gemist-designer-stage__icon-btn:hover,
+.gemist-designer-stage__icon-btn:focus-visible {
+  color: #1a1a1a;
+  outline: none;
+  background: rgba(26, 26, 26, 0.06);
+}
+
+.gemist-designer-stage__icon-btn[data-copied="true"] {
+  color: #1a1a1a;
+}
+
+.gemist-designer-stage__icon-btn[data-copied="true"]::after {
+  content: "Copied";
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.2rem 0.45rem;
+  border-radius: 4px;
+  background: #1a1a1a;
+  color: #fff;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.gemist-designer-stage__icon-btn[aria-pressed="true"] {
+  color: #1a1a1a;
+  background: rgba(26, 26, 26, 0.08);
+}
+
+/* CSS fullscreen fallback for mobile browsers without Fullscreen API */
+.gemist-designer-stage.is-immersive {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  max-height: 100dvh;
+  padding: max(0.75rem, env(safe-area-inset-top)) 0.75rem
+    max(0.75rem, env(safe-area-inset-bottom));
+  background: var(--gemist-designer-bg, #f6f4ef);
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.gemist-designer-stage.is-immersive .gemist-designer-stage__viewport {
+  flex: 1 1 auto;
+  min-height: min(70dvh, 560px);
+}
+
+.gemist-designer-stage.is-immersive .gemist-designer-stage__hero-wrap {
+  min-height: min(58dvh, 480px);
+}
+
+.gemist-designer-stage.is-immersive .gemist-designer-stage__hero {
+  width: min(100%, 720px);
+  max-height: min(58dvh, 480px);
+}
+
+html.gemist-stage-immersive,
+body.gemist-stage-immersive {
+  overflow: hidden !important;
+}
+
+.gemist-designer-stage:fullscreen,
+.gemist-designer-stage:-webkit-full-screen {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+  background: var(--gemist-designer-bg, #f6f4ef);
+  overflow: auto;
+}
+
+.gemist-designer-stage__title {
+  margin: 0 0 0.75rem;
+  max-width: 42rem;
+  color: var(--gemist-lux-primary, #1a1a1a);
+  font-family: var(--gemist-font-heading, var(--gemist-lux-serif));
+  font-size: clamp(1.75rem, 2.4vw + 1rem, 3rem);
+  font-weight: 100;
+  letter-spacing: -0.025em;
+  line-height: 1.12;
+  word-break: break-word;
+}
+
+.gemist-designer-stage__viewport {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: center;
+  flex: 1;
+  min-height: min(420px, 52vh);
+}
+
+.gemist-designer-stage__thumbs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-self: center;
+  max-height: min(440px, 56vh);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.gemist-designer-stage__thumb {
+  appearance: none;
+  width: 5rem;
+  height: 5rem;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: #fff;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.gemist-designer-stage__thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gemist-designer-stage__thumb[aria-current="true"] {
+  border-color: #1a1a1a;
+}
+
+.gemist-designer-stage__hero-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: min(400px, 50vh);
+  padding: 0.5rem 1.5rem;
+}
+
+.gemist-designer-stage__hero {
+  display: block;
+  width: min(100%, 560px);
+  max-height: min(400px, 50vh);
+  height: auto;
+  object-fit: contain;
+}
+
+.gemist-designer-stage__nav {
+  appearance: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  background: transparent;
+  color: #1a1a1a;
+  font-size: 1.75rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.gemist-designer-stage__nav--prev {
+  left: 0.15rem;
+}
+
+.gemist-designer-stage__nav--next {
+  right: 0.15rem;
+}
+
+.gemist-designer-stage__powered {
+  margin: 0.5rem 0 0;
+  text-align: center;
+  color: #8a8a8a;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+}
+
+.gemist-designer-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  align-self: stretch;
+  box-sizing: border-box;
+  height: 100%;
+  max-height: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: 0.9rem 0.85rem 0.8rem;
+  border: 1px solid #e5e1d8;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(26, 26, 26, 0.05);
+  overflow: hidden;
+}
+
+.gemist-designer-panel__title,
+.gemist-designer-panel__search,
+.gemist-designer-panel__tabs,
+.gemist-designer-panel__status,
+.gemist-designer-panel__cta {
+  flex: 0 0 auto;
+}
+
+.gemist-designer-panel__title {
+  margin: 0;
+  color: #1a1a1a;
+  font-family: var(--gemist-font-heading, var(--gemist-lux-serif));
+  font-size: clamp(1.5rem, 1.6vw + 0.9rem, 2.25rem);
+  font-weight: 100;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  word-break: break-word;
+}
+
+.gemist-designer-panel__search {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 999px;
+  background: #f3f1ec;
+  color: #8a8a8a;
+}
+
+.gemist-designer-panel__search-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+
+.gemist-designer-panel__search-input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: #1a1a1a;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 1rem;
+  outline: none;
+}
+
+.gemist-designer-panel__tabs {
+  position: relative;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 1.15rem;
+  overflow-x: auto;
+  margin: 0.6rem 0 0.4rem;
+  padding: 0;
+  scrollbar-width: none;
+  border-radius: 0;
+  box-shadow: inset 0 -1px 0 #8c8c8c;
+}
+
+.gemist-designer-panel__tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.gemist-designer-panel__tab {
+  appearance: none;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0.2rem 0 0.6rem;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: #1a1a1a;
+  font-family: var(--gemist-font-body);
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.gemist-designer-panel__tab:hover:not(:disabled) {
+  color: #000;
+}
+
+.gemist-designer-panel__tab[aria-selected="true"] {
+  background: transparent;
+  color: #000;
+  border-bottom-color: #000;
+}
+
+.gemist-designer-panel__tab:focus-visible {
+  outline: 1px solid #000;
+  outline-offset: 2px;
+}
+
+.gemist-designer-panel__tab[data-locked="true"],
+.gemist-designer-panel__tab:disabled {
+  background: transparent;
+  color: #b5b5b5;
+  border-bottom-color: transparent;
+  cursor: not-allowed;
+}
+
+.gemist-designer-panel__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  align-content: start;
+  align-items: start;
+  padding: 0.15rem 0.1rem 0.35rem;
+  scrollbar-gutter: stable;
+}
+
+.gemist-designer-panel__grid--select {
+  grid-template-columns: 1fr;
+  align-content: start;
+}
+
+.gemist-designer-panel__select-field {
+  display: grid;
+  gap: 0.45rem;
+  width: 100%;
+}
+
+.gemist-designer-panel__select-label {
+  color: #5c5c5c;
+  font-family: var(--gemist-font-body);
+  font-size: 1.2rem;
+  font-weight: 100;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.gemist-designer-panel__select {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 0.85rem 2.5rem 0.85rem 1rem;
+  border: 1px solid #e5e1d8;
+  border-radius: 999px;
+  background-color: #fff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%231a1a1a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 14px;
+  color: #1a1a1a;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.3;
+  cursor: pointer;
+}
+
+.gemist-designer-panel__select:focus {
+  outline: 2px solid #c9a882;
+  outline-offset: 2px;
+}
+
+.gemist-designer-panel__select:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.gemist-designer-panel__option {
+  appearance: none;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: minmax(7.5rem, 52%) minmax(0, 1fr);
+  align-items: stretch;
+  gap: 0;
+  width: 100%;
+  height: 8.75rem;
+  min-height: 8.75rem;
+  max-height: 8.75rem;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #d8d4cc;
+  border-radius: 4px;
+  background: #faf3ef;
+  color: #1a1a1a;
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.gemist-designer-panel__option:hover {
+  border-color: color-mix(in srgb, #c9a882 55%, #d8d4cc);
+}
+
+.gemist-designer-panel__option[aria-pressed="true"] {
+  border-color: #c9a882;
+  border-width: 2px;
+  padding: 0;
+  box-shadow: 0 0 0 1px color-mix(in srgb, #c9a882 35%, transparent);
+}
+
+.gemist-designer-panel__option[data-unavailable="true"] {
+  opacity: 0.38;
+  filter: grayscale(0.85);
+  cursor: not-allowed;
+}
+
+.gemist-designer-panel__option[data-unavailable="true"]:hover {
+  border-color: #d8d4cc;
+}
+
+.gemist-designer-panel__option[data-pending="true"] {
+  cursor: progress;
+  animation: gemist-pulse 1.1s ease-in-out infinite;
+}
+
+.gemist-designer-panel__option--skeleton {
+  cursor: default;
+  background: #f3f1ec;
+  animation: gemist-pulse 1.1s ease-in-out infinite;
+}
+
+.gemist-designer-panel.is-updating .gemist-designer-panel__grid,
+.gemist-designer-panel.is-updating .gemist-designer-panel__tabs {
+  pointer-events: none;
+}
+
+.gemist-designer-panel.is-updating .gemist-designer-panel__grid {
+  opacity: 0.72;
+  transition: opacity 0.15s ease;
+}
+
+.gemist-designer-panel__option-media {
+  box-sizing: border-box;
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 8.75rem;
+  height: 100%;
+  margin: 0;
+  padding: 0.15rem;
+  border-radius: 0;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.gemist-designer-panel__option-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  transform: scale(1.25);
+}
+
+.gemist-designer-panel__option-media--swatch {
+  border: 0;
+  border-right: 1px solid #e8e4dc;
+  padding: 0;
+}
+
+.gemist-designer-panel__engraving {
+  background-image: none;
+  padding-right: 1rem;
+  cursor: text;
+  font-weight: 400;
+}
+
+.gemist-designer-panel__engraving-wrap {
+  display: grid;
+  gap: 0.85rem;
+  width: 100%;
+  align-content: start;
+}
+
+.gemist-designer-panel__engraving-choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem;
+}
+
+.gemist-designer-panel__engraving-choice {
+  appearance: none;
+  margin: 0;
+  padding: 0.85rem 0.75rem;
+  border: 1px solid #d8d4cc;
+  border-radius: 4px;
+  background: #fff;
+  color: #1a1a1a;
+  font-family: var(--gemist-font-body);
+  font-size: 0.92rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.gemist-designer-panel__engraving-choice:hover {
+  border-color: #b9a48a;
+}
+
+.gemist-designer-panel__engraving-choice[aria-pressed="true"] {
+  border-color: #1a1a1a;
+  box-shadow: inset 0 0 0 1px #1a1a1a;
+}
+
+.gemist-designer-panel__engraving-hint {
+  margin: 0;
+  color: #6b6b6b;
+  font-family: var(--gemist-font-body);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.gemist-designer-panel__engraving-hint[data-invalid="true"] {
+  color: #9b3b2e;
+}
+
+.gemist-designer-panel__engraving-fonts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem;
+}
+
+.gemist-designer-panel__engraving-font {
+  appearance: none;
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0.7rem 0.65rem;
+  border: 1px solid #d8d4cc;
+  border-radius: 4px;
+  background: #fff;
+  color: #1a1a1a;
+  text-align: center;
+  cursor: pointer;
+}
+
+.gemist-designer-panel__engraving-font[aria-pressed="true"] {
+  border-color: #1a1a1a;
+  box-shadow: inset 0 0 0 1px #1a1a1a;
+}
+
+.gemist-designer-panel__engraving-font-sample {
+  font-size: 1.35rem;
+  line-height: 1.2;
+  color: #1a1a1a;
+}
+
+.gemist-designer-panel__engraving-font-sample[data-font="Classic"],
+.gemist-designer-panel__engraving-preview[data-font="Classic"] {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.gemist-designer-panel__engraving-font-sample[data-font="Serif"],
+.gemist-designer-panel__engraving-preview[data-font="Serif"] {
+  font-family: "Canela", "Times New Roman", Times, serif;
+  font-weight: 400;
+}
+
+.gemist-designer-panel__engraving-font-sample[data-font="Script"],
+.gemist-designer-panel__engraving-preview[data-font="Script"] {
+  font-family: "Brush Script MT", "Segoe Script", "Apple Chancery", cursive;
+  font-style: italic;
+  font-size: 1.55rem;
+}
+
+.gemist-designer-panel__engraving-font-sample[data-font="Modern"],
+.gemist-designer-panel__engraving-preview[data-font="Modern"] {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 200;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.gemist-designer-panel__engraving-font-name {
+  color: #6b6b6b;
+  font-family: var(--gemist-font-body);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.gemist-designer-panel__engraving-preview {
+  margin: 0;
+  padding: 1rem 0.85rem;
+  border: 1px dashed #d8d4cc;
+  border-radius: 4px;
+  background: #faf7f3;
+  color: #1a1a1a;
+  font-size: 1.7rem;
+  line-height: 1.3;
+  text-align: center;
+  min-height: 3.5rem;
+}
+
+.gemist-designer-panel__engraving-fee {
+  margin: 0;
+  color: #1a1a1a;
+  font-family: var(--gemist-font-body);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.gemist-designer-panel__price-line {
+  flex: 0 0 auto;
+  margin: 0 0 0.35rem;
+  color: #6b6b6b;
+  font-family: var(--gemist-font-body);
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.gemist-designer-panel__engraving-note {
+  margin: 0;
+  color: #8a8a8a;
+  font-family: var(--gemist-font-body);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.gemist-designer-panel__config {
+  flex: 0 0 auto;
+  margin: 0;
+  color: #8a8a8a;
+  font-family: var(--gemist-font-body);
+  font-size: 0.78rem;
+  line-height: 1.35;
+  word-break: break-all;
+}
+
+.gemist-designer-panel__option-media--label {
+  border-right: 1px solid #e8e4dc;
+  background: #f6f4ef;
+}
+
+.gemist-designer-panel__option-mark {
+  color: #8a7355;
+  font-family: var(--gemist-font-heading, var(--gemist-lux-serif));
+  font-size: 1.6rem;
+  font-weight: 100;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  text-align: center;
+}
+
+.gemist-designer-panel__option-label {
+  box-sizing: border-box;
+  display: block;
+  flex: 0 1 auto;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  font-family: var(--gemist-font-body);
+  font-size: 0.875rem;
+  font-weight: 100;
+  line-height: 1.3;
+  color: #1a1a2e;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.gemist-designer-panel__option-copy {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.35rem;
+  min-width: 0;
+  padding: 0.7rem 0.85rem;
+  background: #faf3ef;
+}
+
+.gemist-designer-panel__empty,
+.gemist-designer-panel__status {
+  margin: 0;
+  padding: 0;
+  color: #8a8a8a;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.gemist-designer-panel__cta {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: auto;
+  padding: 0.85rem 1rem;
+  border: 0;
+  border-radius: 999px;
+  background: #111111;
+  color: #fff;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+}
+
+.gemist-designer-panel__cta:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.gemist-designer-panel__cta:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.gemist-designer-page__layout--iframe {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+  max-width: none;
+  background: #f6f4ef;
+}
+
+.gemist-designer-page__layout > .gemist-detail__back,
+.gemist-designer-page__back {
+  grid-column: 1 / -1;
+  width: fit-content;
+  margin: 0.35rem 0.5rem 0.15rem;
+  color: #5c5c5c;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+  font-size: 1.6rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  border: 0;
+  background: transparent;
+}
+
+.gemist-designer-page__back:hover,
+.gemist-designer-page__back:focus-visible {
+  color: #1a1a1a;
+}
+
+#floatingCart {
+  display: none !important;
+}
+
+html.gemist-designer-open #floatingCart,
+body.gemist-designer-open #floatingCart {
+  display: none !important;
+}
+
+.designer-iframe-container {
+  height: calc(100vh - 100px);
+  width: 100%;
+  background: #f6f4ef;
+  border: 0;
+  overflow: hidden;
+}
+
+.designer-iframe-content {
+  height: calc(100vh - 100px);
+  width: 100%;
+  border: 0;
+  clear: both;
+  background: #f6f4ef;
+  border-radius: 0;
+}
+
+@media (max-width: 1100px) {
+  .designer-iframe-container,
+  .designer-iframe-content {
+    height: calc(100vh - 110px);
+  }
+}
+
+@media (min-width: 431px) and (max-width: 960px) {
+  .designer-iframe-container,
+  .designer-iframe-content {
+    height: calc(100vh - 140px);
+  }
+
+  @supports (-webkit-touch-callout: none) {
+    .designer-iframe-container,
+    .designer-iframe-content {
+      height: -webkit-fill-available;
+      min-height: -webkit-fill-available;
+      padding-bottom: 6px;
+    }
+  }
+}
+
+@media (max-width: 430px) {
+  .designer-iframe-container,
+  .designer-iframe-content {
+    height: calc(100vh - 140px);
+  }
+
+  @supports (-webkit-touch-callout: none) {
+    .designer-iframe-container,
+    .designer-iframe-content {
+      height: -webkit-fill-available;
+      min-height: -webkit-fill-available;
+    }
+  }
 }
 
 .gemist-detail__layout {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(min(100%, 420px), 0.8fr);
-  gap: clamp(2rem, 4vw, 3.5rem) clamp(2rem, 5vw, 4.5rem);
+  gap: 1rem 1.25rem;
   align-items: start;
 }
 
@@ -450,10 +1613,10 @@
   grid-column: 1 / -1;
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  margin: 0 0 1.5rem;
+  gap: 0.3rem;
+  margin: 0 0 0.5rem;
   color: var(--gemist-lux-muted);
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 500;
   letter-spacing: 0.01em;
   text-decoration: none;
@@ -486,10 +1649,12 @@
   justify-content: center;
   width: 100%;
   min-height: min(var(--gemist-detail-image-size, 520px), 70vh);
-  padding: clamp(1.5rem, 4vw, 3rem);
-  border-radius: var(--gemist-detail-radius, 18px);
+  padding: 0.75rem;
+  border: 1px solid var(--gemist-lux-border);
+  border-radius: var(--gemist-lux-radius, 12px);
   background: var(--gemist-lux-surface);
   overflow: hidden;
+  box-shadow: 0 8px 28px rgba(26, 26, 26, 0.04);
 }
 
 .gemist-detail__hero {
@@ -518,17 +1683,17 @@
 }
 
 .gemist-detail__rotate {
-  margin: 0.75rem 0 0;
+  margin: 0.4rem 0 0;
   color: var(--gemist-lux-muted);
-  font-size: 0.8125rem;
+  font-size: 0.95rem;
   text-align: center;
 }
 
 .gemist-detail__thumbs {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.625rem;
-  margin-top: 1rem;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
 }
 
 .gemist-detail__thumb {
@@ -536,20 +1701,21 @@
   flex: 0 0 auto;
   padding: 0;
   border: 1px solid var(--gemist-lux-border);
-  border-radius: calc(var(--gemist-detail-radius, 18px) - 6px);
+  border-radius: 8px;
   overflow: hidden;
-  background: var(--gemist-lux-bg);
+  background: var(--gemist-lux-surface);
   cursor: pointer;
-  transition: border-color 0.2s ease, opacity 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .gemist-detail__thumb:hover {
-  border-color: color-mix(in srgb, var(--gemist-lux-primary) 35%, var(--gemist-lux-border));
+  border-color: color-mix(in srgb, var(--gemist-lux-accent) 55%, var(--gemist-lux-border));
 }
 
 .gemist-detail__thumb[aria-current="true"] {
   border-color: var(--gemist-lux-accent);
-  border-width: 1.5px;
+  border-width: 2px;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--gemist-lux-accent) 35%, transparent);
 }
 
 .gemist-detail__thumb img {
@@ -565,6 +1731,11 @@
   gap: 0;
   width: 100%;
   max-width: 36rem;
+  padding: 0.85rem 0.95rem 1rem;
+  border: 1px solid var(--gemist-lux-border);
+  border-radius: var(--gemist-lux-radius, 12px);
+  background: var(--gemist-lux-surface);
+  box-shadow: 0 10px 32px rgba(26, 26, 26, 0.05);
 }
 
 .gemist-detail__header {
@@ -574,58 +1745,63 @@
 }
 
 .gemist-detail__eyebrow {
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.35rem;
   color: var(--gemist-lux-muted);
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 .gemist-detail__title {
   margin: 0;
   color: var(--gemist-lux-primary);
-  font-size: var(--gemist-detail-title-size, clamp(2.25rem, 4.5vw, 3.125rem));
-  font-weight: 400;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
+  font-family: var(--gemist-lux-serif);
+  font-size: var(--gemist-detail-title-size, clamp(1.9rem, 3.5vw, 2.4rem));
+  font-weight: 100;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
 }
 
 .gemist-detail__price {
-  margin: 1rem 0 0;
-  color: var(--gemist-lux-accent);
-  font-size: var(--gemist-detail-price-size, 1.875rem);
-  font-weight: 500;
+  margin: 0.5rem 0 0;
+  color: var(--gemist-lux-primary);
+  font-family: var(--gemist-font-body);
+  font-size: var(--gemist-detail-price-size, 1.75rem);
+  font-weight: 100;
   letter-spacing: -0.01em;
 }
 
 .gemist-detail__description {
-  margin: 1.25rem 0 0;
+  margin: 0.65rem 0 0;
   max-width: 34rem;
   color: var(--gemist-lux-secondary);
-  font-size: var(--gemist-detail-body-size, 1.0625rem);
-  line-height: 1.65;
+  font-family: var(--gemist-font-body);
+  font-size: var(--gemist-detail-body-size, 1.15rem);
+  font-weight: 100;
+  line-height: 1.5;
 }
 
 .gemist-detail__sku {
-  margin: 0;
+  margin: 0.25rem 0 0;
   color: var(--gemist-lux-secondary);
-  font-size: 0.875rem;
-  line-height: 1.45;
+  font-size: 1rem;
+  line-height: 1.4;
 }
 
 .gemist-detail__meta-block {
-  margin-top: 2rem;
-  padding-top: 2rem;
+  margin-top: 0.85rem;
+  padding-top: 0.85rem;
   border-top: 1px solid var(--gemist-lux-border);
 }
 
 .gemist-detail__meta-heading,
 .gemist-detail__specs-heading {
-  margin: 0 0 1rem;
+  margin: 0 0 0.5rem;
   color: var(--gemist-lux-muted);
-  font-size: var(--gemist-detail-specs-heading-size, 0.75rem);
-  font-weight: 600;
+  font-family: var(--gemist-font-body);
+  font-size: var(--gemist-detail-specs-heading-size, 0.85rem);
+  font-weight: 100;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -670,8 +1846,8 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 0.75rem;
-  margin-top: 2rem;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
 }
 
 .gemist-detail__cart {
@@ -684,23 +1860,23 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  min-height: 3.375rem;
+  min-height: 3.25rem;
   padding: 0 1.5rem;
-  border: 1px solid var(--gemist-lux-accent);
-  border-radius: 0.5rem;
-  background: var(--gemist-lux-accent);
+  border: 1px solid var(--gemist-lux-cta, #111111);
+  border-radius: 999px;
+  background: var(--gemist-lux-cta, #111111);
   color: #fff;
   cursor: pointer;
   font: inherit;
-  font-size: 1rem;
-  font-weight: 500;
-  letter-spacing: 0.01em;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
   transition: background 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
 }
 
 .gemist-detail__add:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--gemist-lux-accent) 88%, #000);
-  border-color: color-mix(in srgb, var(--gemist-lux-accent) 88%, #000);
+  background: #000;
+  border-color: #000;
 }
 
 .gemist-detail__add:focus-visible {
@@ -719,24 +1895,25 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  min-height: 3.375rem;
+  min-height: 3.25rem;
   padding: 0 1.5rem;
-  border: 1px solid var(--gemist-lux-primary);
-  border-radius: 0.5rem;
-  background: transparent;
+  border: 1px solid var(--gemist-lux-border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--gemist-lux-accent) 28%, #fff);
   color: var(--gemist-lux-primary);
   cursor: pointer;
   font: inherit;
-  font-size: 1rem;
-  font-weight: 500;
-  letter-spacing: 0.01em;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
   text-decoration: none;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .gemist-detail__secondary:hover,
 .gemist-detail__secondary:focus-visible {
-  background: var(--gemist-lux-surface);
+  background: color-mix(in srgb, var(--gemist-lux-accent) 42%, #fff);
+  border-color: var(--gemist-lux-accent);
   outline: none;
 }
 
@@ -778,16 +1955,17 @@
 }
 
 .gemist-detail__specs-section {
-  margin-top: var(--gemist-detail-specs-section-gap, 2.5rem);
-  padding-top: calc(var(--gemist-detail-specs-section-gap, 40px) * 0.5);
+  margin-top: var(--gemist-detail-specs-section-gap, 0.85rem);
+  padding-top: 0.75rem;
   border-top: 1px solid var(--gemist-lux-border);
 }
 
 .gemist-detail__specs-heading {
-  margin: 0 0 1rem;
+  margin: 0 0 0.45rem;
   color: var(--gemist-lux-muted);
-  font-size: var(--gemist-detail-specs-heading-size, 0.75rem);
-  font-weight: 600;
+  font-family: var(--gemist-font-body);
+  font-size: var(--gemist-detail-specs-heading-size, 0.9rem);
+  font-weight: 100;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -842,9 +2020,9 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 0.5rem;
-  margin: 0;
-  padding: 0.35rem var(--gemist-card-padding, 1rem) var(--gemist-card-padding, 1rem);
+  gap: 0.45rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
 }
 
 .gemist-product-card__actions a {
@@ -852,79 +2030,115 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--gemist-setting-accent, #1f6feb);
-  background: transparent;
-  color: var(--gemist-setting-accent, #1f6feb);
+  border: 1px solid transparent;
   border-radius: 999px;
-  padding: 0.7rem 1.25rem;
-  min-height: 2.75rem;
-  font: inherit;
-  font-weight: 650;
+  padding: 0.65rem 1rem;
+  min-height: 2.6rem;
+  font-family: var(--gemist-font-body);
+  font-size: var(--gemist-action-font-size, 1rem);
+  font-weight: 100;
   text-decoration: none;
   cursor: pointer;
   box-sizing: border-box;
+  transition: filter 0.2s ease, opacity 0.2s ease;
+}
+
+.gemist-product-card__action--view {
+  background: var(--gemist-view-btn-bg, #ffffff);
+  color: var(--gemist-view-btn-text, #1a1a1a);
+  border-color: color-mix(in srgb, var(--gemist-view-btn-text, #1a1a1a) 18%, transparent);
+}
+
+.gemist-product-card__action--customize {
+  background: var(--gemist-customize-btn-bg, #1a1a2e);
+  color: var(--gemist-customize-btn-text, #ffffff);
+  border-color: var(--gemist-customize-btn-bg, #1a1a2e);
+}
+
+.gemist-product-card__actions a:hover {
+  filter: brightness(1.06);
 }
 
 .gemist-designer {
   display: grid;
-  gap: 0.65rem;
-  margin: 1rem 0 0;
-  padding: 0.85rem 1rem;
-  border: 1px solid var(--gemist-border, #e6e6e6);
-  border-radius: var(--gemist-detail-radius, 12px);
+  gap: 0.85rem;
+  margin: 1.15rem 0 0;
+  padding: 1rem 1.1rem 1.15rem;
+  border: 1px solid #e5e1d8;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(26, 26, 26, 0.04);
 }
 
 .gemist-designer__heading {
   margin: 0;
-  font-size: 0.95rem;
-  font-weight: 650;
+  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  font-size: 1.05rem;
+  font-weight: 400;
 }
 
 .gemist-designer__status {
   margin: 0;
-  color: var(--gemist-muted);
+  color: #8a8a8a;
   font-size: 0.85rem;
 }
 
 .gemist-designer__field {
   display: grid;
-  gap: 0.35rem;
-  font-size: 0.9rem;
+  gap: 0.45rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #5c5c5c;
 }
 
 .gemist-designer__field select,
 .gemist-designer__field input {
   font: inherit;
-  padding: 0.55rem 0.7rem;
-  border-radius: 8px;
-  border: 1px solid var(--gemist-border, #d0d0d0);
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: normal;
+  text-transform: none;
+  color: #1a1a1a;
+  padding: 0.65rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid #e5e1d8;
   background: #fff;
 }
 
 .gemist-designer__chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
 }
 
 .gemist-designer__chip {
   appearance: none;
-  display: inline-flex;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.4rem;
-  border: 1px solid var(--gemist-border, #d0d0d0);
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 4.5rem;
+  border: 1px solid #e5e1d8;
   background: #fff;
-  color: inherit;
-  border-radius: 999px;
-  padding: 0.4rem 0.7rem;
+  color: #1a1a1a;
+  border-radius: 10px;
+  padding: 0.7rem 0.65rem;
   font: inherit;
-  font-size: 0.88rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: normal;
+  text-transform: none;
   cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .gemist-designer__chip[aria-pressed="true"] {
-  border-color: var(--gemist-setting-accent, #1f6feb);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--gemist-setting-accent, #1f6feb) 25%, transparent);
+  border-color: #c9a882;
+  border-width: 2px;
+  box-shadow: 0 0 0 1px color-mix(in srgb, #c9a882 40%, transparent);
 }
 
 .gemist-designer__swatch {
@@ -935,6 +2149,7 @@
   flex: 0 0 auto;
 }
 
+/* ── Laptop / desktop (≥ 990px) ── */
 @media (min-width: 990px) {
   .gemist-detail__info {
     position: sticky;
@@ -944,7 +2159,66 @@
   }
 }
 
+/* Narrower laptops: give the stage more room, keep panel usable */
+@media (min-width: 990px) and (max-width: 1199px) {
+  .gemist-designer-page__layout--studio {
+    grid-template-columns: minmax(0, 1fr) minmax(340px, 420px);
+    width: min(1200px, calc(100% - 1.5rem));
+    gap: 0.65rem 0.85rem;
+  }
+
+  .gemist-designer-stage__thumb {
+    width: 4rem;
+    height: 4rem;
+  }
+
+  .gemist-designer-stage__hero-wrap {
+    min-height: min(380px, 50vh);
+    padding: 0.35rem 1.1rem;
+  }
+
+  .gemist-designer-stage__hero {
+    width: min(100%, 460px);
+    max-height: min(380px, 50vh);
+  }
+
+  .gemist-designer-panel__option {
+    grid-template-columns: minmax(5.5rem, 46%) minmax(0, 1fr);
+    height: 7.5rem;
+    min-height: 7.5rem;
+    max-height: 7.5rem;
+  }
+
+  .gemist-designer-panel__option-media {
+    min-height: 7.5rem;
+  }
+
+  .gemist-designer-panel__option-label {
+    font-size: 0.8rem;
+  }
+
+  .gemist-designer-panel__option-copy {
+    padding: 0.55rem 0.65rem;
+  }
+}
+
+/* ── Tablet (750px – 989px) ── */
 @media (max-width: 989px) {
+  .gemist-catalog__layout {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .gemist-catalog__filters {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 1.25rem;
+  }
+
+  .gemist-products__grid {
+    grid-template-columns: repeat(min(var(--gemist-cols, 4), 3), minmax(0, 1fr));
+  }
+
   .gemist-detail {
     width: calc(100% - 2rem);
     padding-top: 2rem;
@@ -952,9 +2226,133 @@
   }
 
   .gemist-designer-page__layout,
+  .gemist-designer-page__layout--studio,
   .gemist-detail__layout {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 1.25rem;
+  }
+
+  .gemist-designer-page__layout--studio {
+    width: calc(100% - 1.5rem);
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    grid-template-rows: auto auto auto;
+    padding: 0 0 1.25rem;
+  }
+
+  .gemist-designer-page__layout--studio > .gemist-designer-stage,
+  .gemist-designer-page__layout--studio > .gemist-designer-panel {
+    height: auto;
+    max-height: none;
+  }
+
+  .gemist-designer-stage {
+    gap: 0.15rem;
+  }
+
+  .gemist-designer-stage__viewport {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-height: 0;
+  }
+
+  .gemist-designer-stage__thumbs {
+    order: 2;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 0.55rem;
+    align-self: stretch;
+    justify-content: flex-start;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 0.15rem 0.1rem;
+  }
+
+  .gemist-designer-stage__thumbs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .gemist-designer-stage__thumb {
+    flex: 0 0 auto;
+    width: 4.25rem;
+    height: 4.25rem;
+  }
+
+  .gemist-designer-stage__hero-wrap {
+    order: 1;
+    min-height: min(360px, 46vh);
+    padding: 0.35rem 2.25rem;
+  }
+
+  .gemist-designer-stage__hero {
+    width: min(100%, 420px);
+    max-height: min(360px, 46vh);
+  }
+
+  .gemist-designer-panel {
+    height: auto;
+    min-height: 28rem;
+    max-height: none;
+    padding: 1rem 0.95rem 0.9rem;
+  }
+
+  .gemist-designer-panel__grid {
+    flex: 0 1 auto;
+    height: auto;
+    max-height: min(52vh, 420px);
+    overflow-y: auto;
+  }
+
+  /* Vertical option cards so labels stay readable in a 2-col grid */
+  .gemist-designer-panel__option {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(6.5rem, 7.5rem) auto;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+  }
+
+  .gemist-designer-panel__option-media {
+    width: 100%;
+    min-height: 6.5rem;
+    height: 7.5rem;
+    border-right: 0;
+    border-bottom: 1px solid #e8e4dc;
+  }
+
+  .gemist-designer-panel__option-media--swatch,
+  .gemist-designer-panel__option-media--label {
+    border-right: 0;
+    border-bottom: 1px solid #e8e4dc;
+  }
+
+  .gemist-designer-panel__option-copy {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0.65rem 0.55rem;
+    min-height: 3.1rem;
+  }
+
+  .gemist-designer-panel__option-label {
+    font-size: 0.82rem;
+    line-height: 1.25;
+    text-align: center;
+  }
+
+  .gemist-designer-stage__title {
+    font-size: clamp(1.65rem, 4.5vw, 2.4rem);
+  }
+
+  .gemist-designer-panel__title {
+    font-size: clamp(1.4rem, 3.8vw, 2rem);
+  }
+
+  .gemist-designer-panel__tabs {
+    gap: 0.9rem;
   }
 
   .gemist-detail__info {
@@ -973,7 +2371,188 @@
   }
 }
 
+/* ── Mobile (≤ 749px) ── */
 @media (max-width: 749px) {
+  /* Remove section side/vertical padding on mobile */
+  .gemist-products,
+  .gemist-products-block,
+  section.gemist-products,
+  .shopify-section:has(.gemist-products),
+  .shopify-section:has([data-gemist-products]) {
+    --gemist-section-padding: 0 !important;
+    padding: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  .gemist-products [data-gemist-catalog],
+  .gemist-products [data-gemist-detail],
+  .gemist-products [data-gemist-designer-page] {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .gemist-designer-page__layout--studio {
+    width: 100%;
+    max-width: 100%;
+    gap: 0.85rem;
+    padding: 0 0.5rem 1.5rem;
+    margin: 0;
+  }
+
+  .gemist-designer-stage__toolbar {
+    margin-bottom: 0.2rem;
+    gap: 0.45rem;
+    min-height: 2.75rem;
+  }
+
+  .gemist-designer-stage__icon-btn {
+    width: 2.75rem;
+    height: 2.75rem;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+  }
+
+  .gemist-designer-stage__title {
+    font-size: clamp(1.35rem, 6vw, 1.85rem);
+    margin-bottom: 0.4rem;
+    padding: 0 0.15rem;
+  }
+
+  .gemist-designer-stage__hero-wrap {
+    min-height: min(260px, 40vh);
+    padding: 0.2rem 1.85rem;
+  }
+
+  .gemist-designer-stage__hero {
+    width: min(100%, 320px);
+    max-height: min(260px, 40vh);
+  }
+
+  .gemist-designer-stage__nav {
+    width: 2.25rem;
+    height: 2.25rem;
+    font-size: 1.5rem;
+  }
+
+  .gemist-designer-stage__thumb {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 6px;
+  }
+
+  .gemist-designer-stage__powered {
+    margin-top: 0.35rem;
+    font-size: 0.75rem;
+  }
+
+  .gemist-designer-panel {
+    min-height: 0;
+    padding: 0.85rem 0.75rem 0.75rem;
+    border-radius: 12px;
+  }
+
+  /* Designer panel fonts +20% on mobile */
+  .gemist-designer-panel__title {
+    font-size: clamp(1.5rem, 6.6vw, 1.92rem);
+  }
+
+  .gemist-designer-panel__search {
+    padding: 0.5rem 0.7rem;
+  }
+
+  .gemist-designer-panel__search-input {
+    font-size: 1.2rem;
+  }
+
+  .gemist-designer-panel__tabs {
+    gap: 0.75rem;
+    margin: 0.35rem 0 0.25rem;
+  }
+
+  .gemist-designer-panel__tab {
+    font-size: 0.9rem;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 0 0.55rem;
+  }
+
+  .gemist-designer-panel__select-label {
+    font-size: 1.44rem;
+  }
+
+  .gemist-designer-panel__select {
+    font-size: 1.2rem;
+  }
+
+  .gemist-designer-panel__status,
+  .gemist-designer-panel__empty,
+  .gemist-designer-panel__config,
+  .gemist-designer-panel__engraving-note,
+  .gemist-designer-panel__engraving-fee,
+  .gemist-designer-panel__engraving-hint {
+    font-size: 1.05rem;
+  }
+
+  .gemist-designer-panel__engraving-choice {
+    font-size: 1.1rem;
+  }
+
+  .gemist-designer-panel__engraving-font-name {
+    font-size: 0.95rem;
+  }
+
+  .gemist-designer-panel__price-line {
+    font-size: 1.2rem;
+  }
+
+  .gemist-designer-panel__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem;
+    max-height: min(58vh, 460px);
+    padding: 0.1rem 0 0.25rem;
+  }
+
+  .gemist-designer-panel__option {
+    grid-template-rows: minmax(5.25rem, 6.25rem) auto;
+  }
+
+  .gemist-designer-panel__option-media {
+    min-height: 5.25rem;
+    height: 6.25rem;
+    padding: 0.1rem;
+  }
+
+  .gemist-designer-panel__option-media img {
+    transform: scale(1.15);
+  }
+
+  .gemist-designer-panel__option-copy {
+    padding: 0.5rem 0.4rem;
+    min-height: 2.75rem;
+  }
+
+  .gemist-designer-panel__option-label {
+    font-size: 0.94rem;
+    line-height: 1.2;
+  }
+
+  .gemist-designer-panel__option-mark {
+    font-size: 1.5rem;
+  }
+
+  .gemist-designer-panel__cta {
+    min-height: 3rem;
+    font-size: 1.14rem;
+  }
+
+  .gemist-designer-panel__engraving-choices {
+    grid-template-columns: 1fr;
+  }
+
   .gemist-detail {
     width: calc(100% - 1.5rem);
     padding-top: 1.5rem;
@@ -1020,8 +2599,19 @@
     padding: 1rem;
   }
 
+  .gemist-catalog__filters {
+    grid-template-columns: 1fr;
+  }
+
   .gemist-products__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem 1rem;
+  }
+
+  .gemist-product-card__meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
   }
 
   .gemist-embed {
@@ -1029,4 +2619,62 @@
     right: 1rem;
     max-width: none;
   }
+}
+
+/* Extra-narrow phones: one option per row for readable labels */
+@media (max-width: 420px) {
+  .gemist-designer-panel__grid {
+    grid-template-columns: 1fr;
+    max-height: min(62vh, 520px);
+  }
+
+  .gemist-designer-panel__option {
+    grid-template-columns: minmax(6.5rem, 42%) minmax(0, 1fr);
+    grid-template-rows: none;
+    height: 5.75rem;
+    min-height: 5.75rem;
+    max-height: 5.75rem;
+  }
+
+  .gemist-designer-panel__option-media {
+    height: 100%;
+    min-height: 5.75rem;
+    border-bottom: 0;
+    border-right: 1px solid #e8e4dc;
+  }
+
+  .gemist-designer-panel__option-media--swatch,
+  .gemist-designer-panel__option-media--label {
+    border-bottom: 0;
+    border-right: 1px solid #e8e4dc;
+  }
+
+  .gemist-designer-panel__option-copy {
+    align-items: flex-start;
+    justify-content: center;
+    text-align: left;
+    padding: 0.55rem 0.7rem;
+    min-height: 0;
+  }
+
+  .gemist-designer-panel__option-label {
+    text-align: left;
+    font-size: 0.85rem;
+  }
+
+  .gemist-designer-stage__thumb {
+    width: 3.15rem;
+    height: 3.15rem;
+  }
+}
+
+.gemist-preview-notice {
+  margin: 0 0 0.75rem;
+  padding: 0.6rem 0.9rem;
+  border: 1px dashed #b08900;
+  border-radius: 6px;
+  background: #fff8e1;
+  color: #5c4500;
+  font-size: 0.875rem;
+  line-height: 1.4;
 }

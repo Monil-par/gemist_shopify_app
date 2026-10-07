@@ -1,6 +1,9 @@
 import type { ActionFunctionArgs } from "react-router";
 import { authenticate } from "../shopify.server";
-import { ingestShopifyOrder } from "../models/gemist-order.server";
+import {
+  ingestShopifyOrder,
+  retryPendingGemistOrders,
+} from "../models/gemist-order.server";
 
 type ShopifyLineItem = {
   sku?: string;
@@ -73,6 +76,13 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     } catch (error) {
       console.error("[gemist order] ingest failed", error);
     }
+  }
+
+  // Opportunistically retry older failed/pending Gemist handoffs for this shop.
+  try {
+    await retryPendingGemistOrders(shop, { limit: 3 });
+  } catch (error) {
+    console.warn("[gemist order] pending retry sweep failed", error);
   }
 
   return new Response();
