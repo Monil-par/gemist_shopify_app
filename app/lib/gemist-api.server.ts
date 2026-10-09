@@ -392,12 +392,12 @@ export async function submitGemistDraftOrder({
 }
 
 const SLUG_TTL_SECONDS = CACHE_TTL_SECONDS;
-const STYLE_TTL_SECONDS = CACHE_TTL_SECONDS;
+const STYLE_TTL_SECONDS = 15 * 60; // 15 minutes TTL
 
 const styleInflight = new Map<string, Promise<GemistProduct | null>>();
 let gemistActive = 0;
 const gemistWaiters: Array<() => void> = [];
-const GEMIST_CONCURRENCY = 2;
+const GEMIST_CONCURRENCY = 15;
 
 async function withGemistSlot<T>(task: () => Promise<T>): Promise<T> {
   if (gemistActive >= GEMIST_CONCURRENCY) {

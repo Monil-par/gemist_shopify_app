@@ -210,6 +210,11 @@
   data-meta-label="{{ 'gemist.products.meta_heading' | t | escape }}"
 >
   <div data-gemist-catalog>
+    <script>
+      if (/[?&](id|slug|product|productId)=/i.test(window.location.search)) {
+        document.currentScript.parentElement.hidden = true;
+      }
+    </script>
     {%- if block.settings.show_heading and heading != blank -%}
       <h2 class="gemist-products__heading">{{ heading | escape }}</h2>
     {%- endif -%}
@@ -218,7 +223,8 @@
       <aside class="gemist-catalog__filters" data-gemist-filters aria-label="Product filters"></aside>
       <div class="gemist-catalog__main">
         <p class="gemist-products__status" data-gemist-products-status>
-          {{ 'gemist.products.loading' | t }}
+          <span class="gemist-spinner"></span>
+          <span class="gemist-status-text">{{ 'gemist.products.loading' | t }}</span>
         </p>
         <ul class="gemist-products__grid" data-gemist-products-grid hidden></ul>
         <nav class="gemist-products__pager" data-gemist-products-pager hidden aria-label="{{ 'gemist.products.pagination' | t | escape }}"></nav>

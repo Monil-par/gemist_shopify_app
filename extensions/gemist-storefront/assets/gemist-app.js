@@ -1066,8 +1066,8 @@
     const back = document.createElement("a");
     back.className = "gemist-detail__back";
     back.href = catalogUrl({ page: queryParam(PAGE_PARAM) || "1" });
-    const backLabel = root.dataset.backLabel || "Back to products";
-    back.innerHTML = `<span class="gemist-detail__back-arrow" aria-hidden="true">←</span> ${escapeHtml(backLabel)}`;
+    back.setAttribute("aria-label", root.dataset.backLabel || "Back to products");
+    back.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>';
     wrap.appendChild(back);
 
     const media = renderMedia(root, product);
@@ -1253,18 +1253,6 @@
     wrap.className = "gemist-designer-page__layout gemist-designer-page__layout--studio";
     wrap.dataset.gemistDesignerStudio = "true";
 
-    const back = document.createElement("a");
-    back.className = "gemist-detail__back gemist-designer-page__back";
-    back.href = catalogUrl({
-      productId: product.id,
-      slug: product.slug,
-      page: queryParam(PAGE_PARAM),
-    });
-    back.innerHTML = `<span class="gemist-detail__back-arrow" aria-hidden="true">←</span> ${escapeHtml(
-      root.dataset.backProductLabel || "Back to product",
-    )}`;
-    wrap.appendChild(back);
-
     const stage = renderDesignerStage(root, product);
     const panel = renderDesignerPanel(root, product, options);
     wrap.appendChild(stage);
@@ -1278,6 +1266,20 @@
 
     const toolbar = document.createElement("div");
     toolbar.className = "gemist-designer-stage__toolbar";
+    toolbar.style.gap = "1rem";
+
+    const backBtn = document.createElement("a");
+    backBtn.className = "gemist-designer-stage__icon-btn gemist-designer-stage__icon-btn--back";
+    backBtn.setAttribute("aria-label", "Back");
+    backBtn.href = catalogUrl({
+      productId: product.id,
+      slug: product.slug,
+      page: queryParam(PAGE_PARAM),
+    });
+    backBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>';
+    backBtn.style.textDecoration = "none";
+    backBtn.style.color = "inherit";
+    toolbar.appendChild(backBtn);
 
     const share = document.createElement("button");
     share.type = "button";
@@ -1464,6 +1466,8 @@
     if (hero.tagName === "IMG") {
       hero.src = heroSrc;
       hero.alt = productTitle(product);
+      hero.draggable = false;
+      hero.style.userSelect = "none";
     }
 
     const show = (i) => {
@@ -1498,6 +1502,68 @@
     heroWrap.appendChild(prev);
     heroWrap.appendChild(hero);
     heroWrap.appendChild(next);
+
+    let startX = 0;
+    let currentX = 0;
+    let isDragging = false;
+    heroWrap.style.touchAction = "pan-y";
+    heroWrap.style.overflow = "hidden"; // Prevents horizontal scrollbar during swipe
+
+    const snapBack = () => {
+      hero.style.transition = "transform 0.25s ease-out, opacity 0.25s ease-out";
+      hero.style.transform = "translateX(0)";
+      hero.style.opacity = "1";
+    };
+
+    heroWrap.addEventListener("pointerdown", (e) => {
+      if (e.target.closest("button")) return;
+      startX = e.clientX;
+      currentX = startX;
+      isDragging = true;
+      hero.style.transition = "none";
+      heroWrap.setPointerCapture(e.pointerId);
+    }, { passive: true });
+
+    heroWrap.addEventListener("pointermove", (e) => {
+      if (!isDragging) return;
+      currentX = e.clientX;
+      const diff = currentX - startX;
+      hero.style.transform = `translateX(${diff}px)`;
+      hero.style.opacity = 1 - Math.min(Math.abs(diff) / 250, 0.6);
+    }, { passive: true });
+
+    heroWrap.addEventListener("pointerup", (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      heroWrap.releasePointerCapture(e.pointerId);
+      
+      const diff = currentX - startX;
+      if (Math.abs(diff) > 50) {
+        const sign = diff < 0 ? -1 : 1;
+        hero.style.transition = "transform 0.2s ease-out, opacity 0.2s ease-out";
+        hero.style.transform = `translateX(${sign * 150}px)`;
+        hero.style.opacity = "0";
+        
+        setTimeout(() => {
+          if (diff < 0) show(index + 1);
+          else show(index - 1);
+          
+          hero.style.transition = "none";
+          hero.style.transform = `translateX(${-sign * 100}px)`;
+          void hero.offsetWidth; // force browser reflow
+          snapBack();
+        }, 200);
+      } else {
+        snapBack();
+      }
+    }, { passive: true });
+
+    heroWrap.addEventListener("pointercancel", (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      snapBack();
+    });
+
     viewport.appendChild(thumbs);
     viewport.appendChild(heroWrap);
     stage.appendChild(viewport);
@@ -2674,9 +2740,80 @@
       hint.textContent = root.dataset.rotateLabel || "Drag to rotate";
       media.appendChild(hint);
     } else {
-      if (hero.tagName === "IMG") hero.src = imageSrc;
+      if (hero.tagName === "IMG") {
+        hero.src = imageSrc;
+        hero.draggable = false;
+        hero.style.userSelect = "none";
+      }
       frame.appendChild(hero);
       media.appendChild(frame);
+
+      if (stills.length > 1) {
+        let detailIndex = 0;
+        let detailStartX = 0;
+        let detailDragging = false;
+        frame.style.touchAction = "pan-y";
+        frame.style.overflow = "hidden";
+
+        const detailSnapBack = () => {
+          hero.style.transition = "transform 0.25s ease-out, opacity 0.25s ease-out";
+          hero.style.transform = "translateX(0)";
+          hero.style.opacity = "1";
+        };
+
+        const detailShow = (i) => {
+          if (hero.tagName !== "IMG") return;
+          detailIndex = ((i % stills.length) + stills.length) % stills.length;
+          hero.src = stills[detailIndex];
+          const thumbButtons = media.querySelectorAll(".gemist-detail__thumb");
+          thumbButtons.forEach((el) => el.removeAttribute("aria-current"));
+          if (thumbButtons[detailIndex]) thumbButtons[detailIndex].setAttribute("aria-current", "true");
+        };
+
+        frame.addEventListener("pointerdown", (e) => {
+          if (e.target.closest("button")) return;
+          detailStartX = e.clientX;
+          detailDragging = true;
+          hero.style.transition = "none";
+          frame.setPointerCapture(e.pointerId);
+        }, { passive: true });
+
+        frame.addEventListener("pointermove", (e) => {
+          if (!detailDragging) return;
+          const diff = e.clientX - detailStartX;
+          hero.style.transform = `translateX(${diff}px)`;
+          hero.style.opacity = 1 - Math.min(Math.abs(diff) / 250, 0.6);
+        }, { passive: true });
+
+        frame.addEventListener("pointerup", (e) => {
+          if (!detailDragging) return;
+          detailDragging = false;
+          frame.releasePointerCapture(e.pointerId);
+          const diff = e.clientX - detailStartX;
+          if (Math.abs(diff) > 50) {
+            const sign = diff < 0 ? -1 : 1;
+            hero.style.transition = "transform 0.2s ease-out, opacity 0.2s ease-out";
+            hero.style.transform = `translateX(${sign * 150}px)`;
+            hero.style.opacity = "0";
+            setTimeout(() => {
+              if (diff < 0) detailShow(detailIndex + 1);
+              else detailShow(detailIndex - 1);
+              hero.style.transition = "none";
+              hero.style.transform = `translateX(${-sign * 100}px)`;
+              void hero.offsetWidth;
+              detailSnapBack();
+            }, 200);
+          } else {
+            detailSnapBack();
+          }
+        }, { passive: true });
+
+        frame.addEventListener("pointercancel", () => {
+          if (!detailDragging) return;
+          detailDragging = false;
+          detailSnapBack();
+        });
+      }
     }
 
     if (stills.length > 1) {

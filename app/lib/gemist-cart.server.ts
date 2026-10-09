@@ -166,13 +166,13 @@ export function cartProperties(
   }
 
   const title = product.title || product.shortTitle;
-  if (title) properties.Title = clip(title);
+  if (title) properties._gemist_title = clip(title);
 
   const extras: Array<[string, unknown]> = [
-    ["Style", product.style],
-    ["SKU", product.sku],
-    ["Metal", product.metal],
-    ["Vendor", product.vendor],
+    ["_gemist_style", product.style],
+    ["_gemist_sku", product.sku],
+    ["_gemist_metal", product.metal],
+    ["_gemist_vendor", product.vendor],
   ];
   for (const [label, value] of extras) {
     if (value == null || value === "") continue;

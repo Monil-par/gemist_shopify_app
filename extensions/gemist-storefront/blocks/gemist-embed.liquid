@@ -1,20 +1,101 @@
-{%- comment -%} Floating widget removed. Kept as a disabled app embed so existing themes do not break. {%- endcomment -%}
+{%- comment -%}
+  Gemist Global Interceptor
+  This app embed block fixes cart links for the Gemist structural product
+  and automatically redirects the structural product page to the customization page.
+{%- endcomment -%}
+
+<script>
+  (function() {
+    function getGemistCustomizeUrl(item) {
+      if (!item.properties || !item.properties._gemist_product_id) return null;
+      var url = "/collections/all?gemist_product=" + encodeURIComponent(item.properties._gemist_product_id);
+      if (item.properties._gemist_slug) {
+        url += "&gemist_slug=" + encodeURIComponent(item.properties._gemist_slug);
+      }
+      url += "&gemist_customize=1";
+      return url;
+    }
+
+    function fixCartLinks(cart) {
+      if (!cart || !cart.items) return;
+      var gemistItems = cart.items.filter(function(i) {
+        return i.url && i.url.indexOf('gemist-custom-jewelry') !== -1;
+      });
+      
+      gemistItems.forEach(function(item) {
+        var newUrl = getGemistCustomizeUrl(item);
+        if (!newUrl) return;
+
+        // Find all links matching this item's variant URL
+        var links = document.querySelectorAll('a[href*="' + item.url.split('?')[0] + '"]');
+        for (var i = 0; i < links.length; i++) {
+          var href = links[i].getAttribute('href');
+          if (href && href.indexOf('variant=' + item.variant_id) !== -1) {
+            links[i].setAttribute('href', newUrl);
+          }
+        }
+      });
+    }
+
+    function checkProductPageRedirect() {
+      if (window.location.pathname.indexOf('/products/gemist-custom-jewelry') === -1) return;
+      
+      var urlParams = new URLSearchParams(window.location.search);
+      var variantId = urlParams.get('variant');
+      if (!variantId) return;
+
+      var cartUrl = (window.Shopify && window.Shopify.routes ? window.Shopify.routes.root : '/') + 'cart.js';
+      fetch(cartUrl)
+        .then(function(res) { return res.json(); })
+        .then(function(cart) {
+          var item = cart.items.find(function(i) { return String(i.variant_id) === String(variantId); });
+          if (item) {
+            var newUrl = getGemistCustomizeUrl(item);
+            if (newUrl) {
+              window.location.replace(newUrl);
+            }
+          }
+        })
+        .catch(function(e) { console.error('Gemist redirect error', e); });
+    }
+
+    // 1. If we are on the structural product page, redirect immediately
+    checkProductPageRedirect();
+
+    var cartUrl = (window.Shopify && window.Shopify.routes ? window.Shopify.routes.root : '/') + 'cart.js';
+
+    // 2. Fetch cart to rewrite any links on the current page (e.g., Cart page, Drawer)
+    fetch(cartUrl)
+      .then(function(res) { return res.json(); })
+      .then(fixCartLinks)
+      .catch(function(e) { console.error('Gemist cart fetch error', e); });
+
+    // 3. Listen for AJAX cart updates (theme dependent, but covers standard fetch)
+    var origFetch = window.fetch;
+    window.fetch = function() {
+      return origFetch.apply(this, arguments).then(function(response) {
+        var url = response.url || "";
+        if (url.indexOf('/cart/add') !== -1 || url.indexOf('/cart/change') !== -1 || url.indexOf('/cart/update') !== -1 || url.indexOf('/cart.js') !== -1) {
+          setTimeout(function() {
+            origFetch(cartUrl)
+              .then(function(res) { return res.json(); })
+              .then(fixCartLinks);
+          }, 500);
+        }
+        return response;
+      });
+    };
+  })();
+</script>
 
 {% schema %}
 {
-  "name": "Floating widget (retired)",
+  "name": "Gemist URL Fixer",
   "target": "body",
-  "stylesheet": "gemist-storefront.css",
   "settings": [
     {
       "type": "paragraph",
-      "content": "This floating widget has been removed. Turn it off in Theme settings → App embeds if it is still listed."
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_widget",
-      "label": "Show floating data widget",
-      "default": false
+      "content": "This script ensures that customers clicking on 'Gemist Custom Jewelry' in the cart are redirected back to their active customization instead of a generic product page."
     }
   ]
 }

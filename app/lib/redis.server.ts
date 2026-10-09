@@ -33,9 +33,15 @@ export async function getRedis(): Promise<Redis | null> {
       });
     }
 
+    let isConnecting = false;
     if (client.status === "wait") {
+      if (!(client as any)._connecting) {
+        (client as any)._connecting = client.connect().finally(() => {
+          (client as any)._connecting = null;
+        });
+      }
       await Promise.race([
-        client.connect(),
+        (client as any)._connecting,
         wait(800).then(() => {
           throw new Error("Redis connect timeout");
         }),
